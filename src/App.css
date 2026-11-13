@@ -1,1 +1,173 @@
-/* TERRALAB App-level custom overrides if needed */
+/* ==========================================================================
+   AEROKRYPT - Global Aerospace Design Language & SpaceX-Inspired Enhancements
+   ========================================================================== */
+
+/* Universal Card Lift & Crisp Border Illumination */
+.candidate-card,
+.location-inspector-card,
+.matrix-card,
+.evaluation-controls-bar,
+.site-profile-header,
+.dual-suitability-panel,
+.parameter-grid-card,
+.missing-params-card,
+.divergence-card,
+.evidence-registry-section,
+.assessment-summary-card,
+.research-hub-card,
+.experiment-card,
+.record-card,
+.workspace-form-card,
+.public-discovery-card,
+.story-card,
+.interactive-map-wrapper {
+  background-color: var(--bg-surface) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-xs) !important;
+  transition: transform var(--transition-aerospace), border-color var(--transition-aerospace), box-shadow var(--transition-aerospace) !important;
+}
+
+.candidate-card:hover,
+.location-inspector-card:hover,
+.experiment-card:hover,
+.record-card:hover,
+.story-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Aerospace Form Controls */
+select,
+input[type="text"],
+input[type="number"],
+textarea {
+  background-color: var(--bg-void) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-xs) !important;
+  color: #ffffff !important;
+  font-family: inherit;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast) !important;
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  border-color: var(--accent-cyan) !important;
+  background-color: var(--bg-surface-elevated) !important;
+  outline: none !important;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.2) !important;
+}
+
+/* SpaceX-style Ghost Action Buttons across all modules */
+.btn-export-dossier,
+.btn-nav-finder,
+.apply-filter-btn,
+.reset-filter-btn,
+.hub-action-btn,
+.tab-button,
+.discovery-filter-btn {
+  font-family: var(--font-sans) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-radius: var(--radius-none) !important;
+  transition: all var(--transition-aerospace) !important;
+}
+
+.tab-button {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  color: var(--text-secondary) !important;
+  padding: 10px 18px !important;
+  font-size: 13px !important;
+}
+
+.tab-button:hover {
+  color: #ffffff !important;
+}
+
+.tab-button.active {
+  color: #ffffff !important;
+  border-bottom-color: var(--accent-cyan) !important;
+}
+
+/* Story Cards in Public Discovery (Image Zoom & Hover Info) */
+.story-card {
+  overflow: hidden;
+  position: relative;
+}
+
+.story-card-image-wrap {
+  overflow: hidden;
+  position: relative;
+}
+
+.story-card-image-wrap img,
+.story-card-image-wrap .story-visual-canvas {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+.story-card:hover .story-card-image-wrap img,
+.story-card:hover .story-card-image-wrap .story-visual-canvas {
+  transform: scale(1.04) !important;
+}
+
+/* Aerospace Tables & Registry styling */
+table.evidence-registry-table,
+table.comparison-matrix-table,
+table.divergence-matrix-table,
+table.parameters-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-xs) !important;
+  overflow: hidden !important;
+}
+
+table th {
+  background-color: var(--bg-void) !important;
+  color: var(--text-muted) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.12em !important;
+  padding: 12px 14px !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+table td {
+  padding: 12px 14px !important;
+  border-bottom: 1px solid var(--border-faint) !important;
+  background-color: var(--bg-surface) !important;
+  color: var(--text-secondary) !important;
+  font-size: 13px !important;
+}
+
+table tr:hover td {
+  background-color: var(--bg-surface-elevated) !important;
+  color: #ffffff !important;
+}
+
+/* Leaflet map container aerospace frame */
+.leaflet-container {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: var(--radius-xs) !important;
+  background-color: #050608 !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--bg-surface-elevated) !important;
+  border-color: var(--border-subtle) !important;
+  color: #ffffff !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--bg-surface-hover) !important;
+  color: var(--accent-cyan) !important;
+}

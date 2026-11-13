@@ -1,79 +1,87 @@
 :root {
   /* ==========================================================================
-     TERRALAB - Earth Analogue Research & Exploration Platform
-     Design System & Token Architecture
+     AEROKRYPT - Advanced Planetary Analogue Exploration Platform
+     Design System & Aerospace Token Architecture (SpaceX-Inspired Aesthetic)
      ========================================================================== */
 
-  /* Surface & Background Hierarchy (Deep Navy / Space Blue) */
-  --bg-void: #060913;
-  --bg-canvas: #090e1c;
-  --bg-surface: #0f172a;
-  --bg-surface-elevated: #162238;
-  --bg-surface-hover: #1c2b48;
-  --bg-surface-active: #1e3357;
-  --bg-surface-translucent: rgba(15, 23, 42, 0.75);
+  /* Deep Space & Charcoal Background Hierarchy */
+  --bg-space: #050608;
+  --bg-void: #07080c;
+  --bg-canvas: #090a0f;
+  --bg-surface: #0d0f15;
+  --bg-surface-elevated: #12151e;
+  --bg-surface-hover: #181d28;
+  --bg-surface-active: #1e2432;
+  --bg-surface-translucent: rgba(13, 15, 21, 0.85);
+  --bg-overlay: rgba(5, 6, 8, 0.92);
 
-  /* Precise Technical Borders */
-  --border-faint: rgba(56, 189, 248, 0.06);
-  --border-subtle: rgba(56, 189, 248, 0.12);
-  --border-default: rgba(56, 189, 248, 0.2);
-  --border-strong: rgba(56, 189, 248, 0.4);
-  --border-active: #38bdf8;
+  /* Precise Aerospace 1px Borders */
+  --border-faint: rgba(255, 255, 255, 0.05);
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-default: rgba(255, 255, 255, 0.18);
+  --border-strong: rgba(255, 255, 255, 0.35);
+  --border-active: #ffffff;
+  --border-accent: #00d2ff;
+  --border-cyan: rgba(0, 210, 255, 0.35);
 
-  /* Typography Colors */
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-disabled: #475569;
-  --text-accent: #38bdf8;
-  --text-inverse: #020617;
+  /* Aerospace Typography Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a4ad;
+  --text-muted: #6b7280;
+  --text-disabled: #4b5563;
+  --text-accent: #00d2ff;
+  --text-inverse: #050608;
 
-  /* Scientific Visual Identity & Accents */
-  --accent-cyan: #38bdf8;
-  --accent-cyan-rgb: 56, 189, 248;
-  --accent-blue: #2563eb;
-  --accent-blue-rgb: 37, 99, 235;
-  --accent-indigo: #6366f1;
-  --accent-earth: #10b981;          /* Earth biosystem / field research green */
-  --accent-mars: #ea580c;           /* Martian regolith / Iron oxide analogue */
-  --accent-amber: #f59e0b;          /* Calibration / Sample data marker */
-  --accent-rose: #f43f5e;           /* Anomalies / Divergence alerts */
+  /* Restrained Accents */
+  --accent-cyan: #00d2ff;
+  --accent-cyan-rgb: 0, 210, 255;
+  --accent-blue: #0284c7;
+  --accent-blue-rgb: 2, 132, 199;
+  --accent-mars: #f97316;
+  --accent-moon: #94a3b8;
+  --accent-earth: #10b981;
+  --accent-amber: #eab308;
+  --accent-rose: #ef4444;
 
   /* Typography */
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
 
   /* Layout Dimensions */
-  --sidebar-width: 268px;
-  --sidebar-width-collapsed: 74px;
-  --topbar-height: 64px;
+  --nav-height: 72px;
+  --nav-height-mobile: 64px;
+  --max-content-width: 1560px;
 
-  /* Radii */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  /* Precise Geometric Radii (No bloated roundness - crisp 0 to 4px) */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
   --radius-pill: 9999px;
 
-  /* Elevation Shadows */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 28px -4px rgba(0, 0, 0, 0.6);
-  --shadow-glow: 0 0 18px rgba(56, 189, 248, 0.12);
-  --shadow-glow-active: 0 0 20px rgba(56, 189, 248, 0.25);
+  /* Subtle Clean Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.85);
+  --shadow-glow: 0 0 24px rgba(0, 210, 255, 0.12);
+  --shadow-glow-active: 0 0 32px rgba(0, 210, 255, 0.25);
 
   /* Transitions */
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-aerospace: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Z-Index Hierarchy */
+  --z-negative: -1;
   --z-base: 1;
   --z-elevated: 10;
-  --z-topbar: 30;
-  --z-sidebar: 40;
-  --z-backdrop: 35;
-  --z-modal: 50;
-  --z-tooltip: 60;
+  --z-dropdown: 100;
+  --z-sticky: 500;
+  --z-nav: 1000;
+  --z-modal-backdrop: 1100;
+  --z-modal: 1200;
+  --z-tooltip: 1300;
 }
-

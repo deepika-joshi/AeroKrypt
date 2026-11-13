@@ -1,54 +1,72 @@
 import Card from '../common/Card.jsx'
 import StatusBadge from '../common/StatusBadge.jsx'
-import { DATA_SOURCES_INTEGRATION } from '../../data/analogueData.js'
+import { MASTER_DATASET_INVENTORY } from '../../data/datasetInventory.js'
 
 export default function DataSourcesCard() {
+  const recentDatasets = MASTER_DATASET_INVENTORY.slice(0, 6)
+
   return (
     <Card
-      title="Data Sources & Planned Integrations"
-      subtitle="Standardized institutional data pipelines and planetary archive integration status"
-      badge={<StatusBadge variant="planned" label="PDS4 / USGS SCHEMA" size="sm" />}
+      title="Cataloged External Datasets & PDS/USGS Specifications (Metadata Archive)"
+      subtitle="Authoritative planetary and Earth observation archive specifications documented with spatial resolutions, datums, and CRS definitions"
+      badge={<StatusBadge variant="source" label="METADATA &amp; MAP SERVICES" size="sm" />}
       className="data-sources-card"
     >
       <div className="integration-disclaimer-banner">
         <span className="banner-icon" aria-hidden="true">&#9881;</span>
         <div className="banner-text">
-          <strong>Integration Architecture Disclosure:</strong> TERRALAB is architected around NASA Planetary Data System (PDS4) data dictionary standards and USGS Earth Resources Observation and Science (EROS) STAC specifications. Direct API pipelines are planned for production integration; current interfaces operate on verified geographical metadata schemas.
+          <strong>Integration Architecture Disclosure:</strong> AEROKRYPT does not currently run live raster pipelines or parse raw binary grids (PDS3 IMG / NetCDF) on the client. Visual layers operate via public WMTS web tile services (<code>MAP_SERVICE</code>), while terrain comparisons evaluate curated literature and PDS/USGS summary parameters (<code>METADATA_ONLY</code>). Direct API pipelines to PDS4 and USGS STAC remain future integration milestones.
         </div>
       </div>
 
-      <div className="sources-grid">
-        {DATA_SOURCES_INTEGRATION.map((source) => (
-          <div key={source.id} className="source-pipeline-card">
+      <div className="sources-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+        {recentDatasets.map((ds) => (
+          <div key={ds.id} className="source-pipeline-card">
             <div className="source-pipeline-top">
-              <h3 className="source-name">{source.name}</h3>
+              <div>
+                <span
+                  className="font-mono"
+                  style={{
+                    fontSize: '10px',
+                    color: ds.planetaryBody === 'Mars' ? '#ef4444' : ds.planetaryBody === 'Moon' ? '#38bdf8' : '#10b981',
+                    textTransform: 'uppercase',
+                    fontWeight: 600,
+                  }}
+                >
+                  {ds.planetaryBody}
+                </span>
+                <h3 className="source-name" style={{ marginTop: '2px', fontSize: '13px' }}>{ds.name}</h3>
+              </div>
               <StatusBadge
-                variant={source.statusVariant}
-                label={source.status}
+                variant="source"
+                label={ds.dataFormat.split(' ')[0]}
                 size="xs"
               />
             </div>
 
-            <p className="source-role">{source.role}</p>
+            <p className="source-role" style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              <strong>Coverage:</strong> {ds.coverage}
+            </p>
 
-            <div className="source-pipeline-bottom">
-              <div className="source-mode font-mono">
-                <span className="mode-label">Mode:</span> {source.integrationMode}
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0' }}>
+              <div><strong>Resolution:</strong> {ds.resolution}</div>
+              <div><strong>Classification:</strong> <span className="font-mono" style={{ color: 'var(--color-accent-cyan)' }}>METADATA_ONLY</span></div>
+            </div>
+
+            <div className="source-pipeline-bottom" style={{ marginTop: 'auto', paddingTop: '8px' }}>
+              <div className="source-mode font-mono" style={{ fontSize: '10px' }}>
+                <span className="mode-label">CRS:</span> {ds.coordinateReferenceSystem.slice(0, 32)}...
               </div>
-              {source.attributionUrl !== '#' && (
+              {ds.originalUrl && (
                 <a
-                  href={source.attributionUrl}
+                  href={ds.originalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="source-external-link"
-                  aria-label={`Official documentation for ${source.name}`}
+                  aria-label={`Official portal for ${ds.name}`}
+                  style={{ color: 'var(--color-accent-cyan)', fontSize: '11px', textDecoration: 'none' }}
                 >
-                  <span>Official Portal</span>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                    <polyline points="15 3 21 3 21 9"></polyline>
-                    <line x1="10" y1="14" x2="21" y2="3"></line>
-                  </svg>
+                  <span>Data Archive &rarr;</span>
                 </a>
               )}
             </div>
@@ -58,4 +76,3 @@ export default function DataSourcesCard() {
     </Card>
   )
 }
-

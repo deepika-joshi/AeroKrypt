@@ -10,10 +10,12 @@ import PlanetaryDivergenceTable from './PlanetaryDivergenceTable.jsx'
 import EvidenceRegistryPanel from './EvidenceRegistryPanel.jsx'
 import AssessmentSummaryCard from './AssessmentSummaryCard.jsx'
 import SiteReportModal from './SiteReportModal.jsx'
+import PlanetaryTerrainComparison from './PlanetaryTerrainComparison.jsx'
 import '../../styles/site-evaluation.css'
 
 export default function SiteEvaluation({
   initialLocationId = null,
+  initialTerrainId = null,
   initialExperimentId = null,
   onNavigate = null,
 }) {
@@ -134,13 +136,21 @@ export default function SiteEvaluation({
         </div>
 
         {/* Section Navigation Tabs */}
-        <div className="section-tabs-strip font-mono">
+        <div className="section-tabs-strip font-mono" style={{ flexWrap: 'wrap' }}>
           <button
             type="button"
             className={`tab-btn ${activeSection === 'ALL' ? 'active' : ''}`}
             onClick={() => setActiveSection('ALL')}
           >
             All Evaluation Modules
+          </button>
+          <button
+            type="button"
+            className={`tab-btn ${activeSection === 'PLANETARY' ? 'active' : ''}`}
+            onClick={() => setActiveSection('PLANETARY')}
+            style={{ color: 'var(--color-accent-cyan)', fontWeight: 600 }}
+          >
+            🪐 Planetary Terrain Comparison (Mars / Moon)
           </button>
           <button
             type="button"
@@ -188,14 +198,27 @@ export default function SiteEvaluation({
       </section>
 
       {/* Main Content Sections */}
-      <div className="site-evaluation-body">
-        {/* Profile Header */}
-        <SiteProfileHeader
-          location={location}
-          onExportClick={() => setIsReportModalOpen(true)}
-        />
+      <div className="site-evaluation-body" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* 1. Core Scientific Planetary Terrain Comparison (Merged Module) */}
+        {(activeSection === 'ALL' || activeSection === 'PLANETARY') && (
+          <PlanetaryTerrainComparison
+            initialTargetBody={activeLocation.primaryTarget === 'Moon' ? 'Moon' : 'Mars'}
+            initialTerrainId={initialTerrainId}
+            initialLocationId={selectedLocationId}
+            initialExperimentId={selectedExperimentId}
+            onNavigate={onNavigate}
+          />
+        )}
 
-        {/* Dual Suitability */}
+        {/* 2. Terrestrial Field Profile Header */}
+        {(activeSection === 'ALL' || activeSection !== 'PLANETARY') && (
+          <SiteProfileHeader
+            location={location}
+            onExportClick={() => setIsReportModalOpen(true)}
+          />
+        )}
+
+        {/* 3. Dual Suitability */}
         {(activeSection === 'ALL' || activeSection === 'DUAL') && (
           <DualSuitabilityPanel
             geologicalSimilarity={geologicalSimilarity}
@@ -204,7 +227,7 @@ export default function SiteEvaluation({
           />
         )}
 
-        {/* Missing Critical Parameters */}
+        {/* 4. Missing Critical Parameters */}
         {(activeSection === 'ALL' || activeSection === 'GAPS') && (
           <MissingParametersCard
             missingCriticalParameters={missingCriticalParameters}
@@ -212,14 +235,14 @@ export default function SiteEvaluation({
           />
         )}
 
-        {/* Environmental Parameters Grid */}
+        {/* 5. Environmental Parameters Grid */}
         {(activeSection === 'ALL' || activeSection === 'PARAMS') && (
           <EnvironmentalParameterGrid
             parameters={parameters}
           />
         )}
 
-        {/* Planetary Physical Divergences */}
+        {/* 6. Planetary Physical Divergences */}
         {(activeSection === 'ALL' || activeSection === 'DIVERGENCE') && (
           <PlanetaryDivergenceTable
             planetaryDivergence={planetaryDivergence}
@@ -227,31 +250,29 @@ export default function SiteEvaluation({
           />
         )}
 
-        {/* Synthesis Assessment Summary */}
+        {/* 7. Synthesis Assessment Summary */}
         {(activeSection === 'ALL' || activeSection === 'SYNTHESIS') && (
           <AssessmentSummaryCard
             assessmentSummary={assessmentSummary}
             location={location}
-            experiment={experiment}
           />
         )}
 
-        {/* Peer-Reviewed Evidence Registry */}
+        {/* 8. Traceable Evidence Registry */}
         {(activeSection === 'ALL' || activeSection === 'EVIDENCE') && (
           <EvidenceRegistryPanel
             evidenceRegistry={evidenceRegistry}
-            sourceAttribution={location.sourceAttribution}
           />
         )}
       </div>
 
-      {/* Printable Dossier Modal */}
-      <SiteReportModal
-        isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
-        evaluationData={evaluationData}
-      />
+      {/* Printable / Exportable Site Dossier Modal */}
+      {isReportModalOpen && (
+        <SiteReportModal
+          evaluationData={evaluationData}
+          onClose={() => setIsReportModalOpen(false)}
+        />
+      )}
     </div>
   )
 }
-

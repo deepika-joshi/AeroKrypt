@@ -1,35 +1,33 @@
 import Card from '../common/Card.jsx'
 import StatusBadge from '../common/StatusBadge.jsx'
-import { RECENT_RESEARCH_RECORDS } from '../../data/analogueData.js'
+import { getResearchRecords } from '../../services/researchRecordService.js'
 
 export default function ResearchActivity({ onNavigate, searchQuery = '' }) {
-  const filteredRecords = RECENT_RESEARCH_RECORDS.filter((rec) => {
+  const records = getResearchRecords()
+  const filteredRecords = records.filter((rec) => {
     if (!searchQuery) return true
     const q = searchQuery.toLowerCase()
     return (
-      rec.title.toLowerCase().includes(q) ||
-      rec.authors.toLowerCase().includes(q) ||
-      rec.publication.toLowerCase().includes(q) ||
-      rec.siteAssociated.toLowerCase().includes(q)
+      (rec.title && rec.title.toLowerCase().includes(q)) ||
+      (rec.author && rec.author.toLowerCase().includes(q)) ||
+      (rec.targetBody && rec.targetBody.toLowerCase().includes(q)) ||
+      (rec.summary && rec.summary.toLowerCase().includes(q))
     )
   })
 
   return (
     <Card
-      title="Research Activity & Records"
-      subtitle="Recently cataloged peer-reviewed research papers, expedition reports, and scientific datasets"
-      badge={<StatusBadge variant="verified" label="INDEXED RECORDS" size="sm" />}
+      title="Recent Research Records & Evaluations"
+      subtitle="Peer-reviewed analogue benchmarks, field evaluation results, and indexed scientific publications"
+      badge={<StatusBadge variant="verified" label={`${records.length} RECORDS`} size="sm" />}
       action={
         <button
           type="button"
           className="section-action-btn"
-          onClick={() => onNavigate && onNavigate('research-records')}
-          aria-label="Navigate to Research Records"
+          onClick={() => onNavigate && onNavigate('research-hub', { subview: 'records' })}
+          aria-label="Navigate to Research Records in Research Hub"
         >
-          <span>Research Records</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
+          <span>Research Records &rarr;</span>
         </button>
       }
       className="research-activity-card"
@@ -39,37 +37,71 @@ export default function ResearchActivity({ onNavigate, searchQuery = '' }) {
           <article key={rec.id} className="record-item">
             <div className="record-status-col">
               <StatusBadge
-                variant={rec.isSample ? 'sample' : 'verified'}
-                label={rec.recordType}
+                variant={rec.verifiedStatus === 'PEER_REVIEWED_BENCHMARK' ? 'verified' : 'sample'}
+                label={rec.targetBody || 'MARS'}
                 size="xs"
               />
-              <span className="record-year font-mono">{rec.year}</span>
+              <span className="record-year font-mono">{rec.date ? rec.date.split('-')[0] : '2026'}</span>
             </div>
 
             <div className="record-content-col">
               <h3 className="record-title">{rec.title}</h3>
-              <div className="record-meta-line">
-                <span className="record-authors">{rec.authors}</span>
-                <span className="record-separator" aria-hidden="true">&bull;</span>
-                <span className="record-publication">{rec.publication}</span>
-              </div>
-              <div className="record-site-line">
-                <span className="site-tag">Associated Site: {rec.siteAssociated}</span>
-                <span className="doi-tag font-mono">{rec.doi}</span>
-              </div>
-              <div className="record-attribution-note font-mono">
-                Attribution: {rec.attribution}
-              </div>
+              <p className="record-authors font-mono">{rec.author}</p>
+              <p className="record-snippet">{rec.summary}</p>
+              {rec.doiReference && (
+                <div className="record-doi font-mono">
+                  <span>DOI:</span>{' '}
+                  <a
+                    href={`https://doi.org/${rec.doiReference}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="doi-link"
+                    style={{ color: 'var(--color-accent-cyan)', textDecoration: 'underline' }}
+                  >
+                    {rec.doiReference}
+                  </a>
+                </div>
+              )}
             </div>
 
-            <div className="record-action-col">
+            <div className="record-meta-col">
+              <div
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '3px',
+                  backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                  border: '1px solid var(--border-subtle)',
+                  textAlign: 'center',
+                }}
+              >
+                <div className="font-mono" style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Similarity</div>
+                <div className="font-mono" style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-accent-cyan)' }}>
+                  {rec.compositeSimilarity}%
+                </div>
+              </div>
               <button
                 type="button"
-                className="record-link-btn"
-                onClick={() => onNavigate && onNavigate('research-records')}
-                aria-label={`Inspect citation for ${rec.title}`}
+                className="record-view-btn font-mono"
+                onClick={() =>
+                  onNavigate &&
+                  onNavigate('site-evaluation', {
+                    locationId: rec.earthLocationId,
+                    terrainId: rec.planetaryTerrainId,
+                    experimentId: rec.experimentId,
+                  })
+                }
+                style={{
+                  marginTop: '8px',
+                  background: 'none',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                  padding: '3px 6px',
+                  borderRadius: '2px',
+                  fontSize: '11px',
+                  cursor: 'pointer',
+                }}
               >
-                Inspect Citation &rarr;
+                View Comparison &rarr;
               </button>
             </div>
           </article>
@@ -84,4 +116,3 @@ export default function ResearchActivity({ onNavigate, searchQuery = '' }) {
     </Card>
   )
 }
-

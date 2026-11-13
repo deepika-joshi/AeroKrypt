@@ -57,7 +57,7 @@ export default function SiteReportModal({
           {/* Memorandum Header */}
           <header className="report-memo-header">
             <div className="memo-top-line">
-              <span className="agency-title font-mono">TERRALAB PLANETARY ANALOGUE RESEARCH PLATFORM &bull; DEMO MODE</span>
+              <span className="agency-title font-mono">AEROKRYPT PLANETARY ANALOGUE RESEARCH PLATFORM &bull; DEMO MODE</span>
               <span className="doc-security font-mono">CURATED RESEARCH SAMPLE &bull; NOT OPERATIONAL FLIGHT QUALIFICATION</span>
             </div>
             <h1 className="memo-title">SCIENTIFIC SITE ASSESSMENT DOSSIER</h1>
@@ -305,13 +305,13 @@ export default function SiteReportModal({
           <footer className="report-signoff-block font-mono">
             <div className="signoff-col">
               <span className="signoff-label">PREPARED BY:</span>
-              <span className="signoff-line">TERRALAB Planetary Analogue Research Platform</span>
+              <span className="signoff-line">AEROKRYPT Planetary Analogue Research Platform</span>
               <span className="signoff-date">Date Generated: {currentDate} &bull; Curated Sample v0.1</span>
             </div>
             <div className="signoff-col">
               <span className="signoff-label">INVESTIGATOR ATTESTATION:</span>
               <span className="signoff-line">[ Curated Analogue Literature Sample Baseline &bull; Pre-Mission Planning Mode ]</span>
-              <span className="signoff-date">TERRALAB Demonstration Tier &bull; Zero Fabricated In-Situ Sensor Data</span>
+              <span className="signoff-date">AEROKRYPT Demonstration Tier &bull; Zero Fabricated In-Situ Sensor Data</span>
             </div>
           </footer>
         </div>

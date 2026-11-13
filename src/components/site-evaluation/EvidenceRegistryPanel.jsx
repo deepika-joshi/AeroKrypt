@@ -11,7 +11,7 @@ export default function EvidenceRegistryPanel({ evidenceRegistry, sourceAttribut
           <span className="badge-source font-mono">Traceable Literature Provenance</span>
         </div>
         <p className="section-subtitle">
-          Every scientific claim and environmental parameter in TERRALAB is mapped to peer-reviewed planetary literature or official geodetic datasets.
+          Every scientific claim and environmental parameter in AEROKRYPT is mapped to peer-reviewed planetary literature or official geodetic datasets.
         </p>
       </div>
 

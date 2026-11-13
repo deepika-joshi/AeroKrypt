@@ -1,9 +1,8 @@
+import { NAVIGATION_SECTIONS } from './navigationData.js'
+
 export const NAVIGATION_ITEMS = [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
-    section: 'Overview',
-    description: 'Earth Analogue Research & Exploration Platform metrics and catalog summary',
+    ...NAVIGATION_SECTIONS[0],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="7" height="7"></rect>
@@ -14,10 +13,7 @@ export const NAVIGATION_ITEMS = [
     ),
   },
   {
-    id: 'location-explorer',
-    label: 'Location Explorer',
-    section: 'Sites & Geodesy',
-    description: 'Terrestrial analogue site coordinates, geographic distribution, and terrain mapping',
+    ...NAVIGATION_SECTIONS[1],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
@@ -27,10 +23,7 @@ export const NAVIGATION_ITEMS = [
     ),
   },
   {
-    id: 'site-evaluation',
-    label: 'Site Evaluation',
-    section: 'Sites & Geodesy',
-    description: 'Quantitative environmental fidelity scoring (mineralogy, aridity, UV radiation, regolith)',
+    ...NAVIGATION_SECTIONS[2],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"></circle>
@@ -42,38 +35,7 @@ export const NAVIGATION_ITEMS = [
     ),
   },
   {
-    id: 'planetary-comparison',
-    label: 'Planetary Comparison',
-    section: 'Planetary Science',
-    description: 'Comparative benchmarks between Earth sites and target bodies (Mars, Moon, Titan, Europa)',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="8" cy="8" r="6"></circle>
-        <path d="M18.09 10.37A6 6 0 1 1 10.34 18.1"></path>
-        <path d="m14 14 6 6"></path>
-      </svg>
-    ),
-  },
-  {
-    id: 'experiment-database',
-    label: 'Experiment Database',
-    section: 'Field Operations',
-    description: 'Field campaign test records, biological sample protocols, and instrument trials',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10 2v7.31"></path>
-        <path d="M14 9.3V2"></path>
-        <path d="M8.5 2h7"></path>
-        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
-        <path d="M5.52 16h12.96"></path>
-      </svg>
-    ),
-  },
-  {
-    id: 'research-records',
-    label: 'Research Records',
-    section: 'Field Operations',
-    description: 'Peer-reviewed scientific publications, field logs, DOI attribution, and archival records',
+    ...NAVIGATION_SECTIONS[3],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"></path>
@@ -84,23 +46,7 @@ export const NAVIGATION_ITEMS = [
     ),
   },
   {
-    id: 'researcher-portal',
-    label: 'Researcher Portal',
-    section: 'Access & Gateway',
-    description: 'Collaborative research workspace, NASA PDS pipeline integrations, and data submission',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-        <circle cx="9" cy="7" r="4"></circle>
-        <polyline points="16 11 18 13 22 9"></polyline>
-      </svg>
-    ),
-  },
-  {
-    id: 'public-discovery',
-    label: 'Public Discovery',
-    section: 'Access & Gateway',
-    description: 'Public scientific exploration guides, terrestrial-space educational comparisons',
+    ...NAVIGATION_SECTIONS[4],
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -108,4 +54,3 @@ export const NAVIGATION_ITEMS = [
     ),
   },
 ]
-

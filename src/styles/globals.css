@@ -1,5 +1,5 @@
 /* ==========================================================================
-   TERRALAB - Global Reset & Base Typography
+   AEROKRYPT - Global Reset & Aerospace Typography
    ========================================================================== */
 
 *,
@@ -10,15 +10,18 @@
   padding: 0;
 }
 
-html,
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-space);
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -32,15 +35,11 @@ body {
   flex-direction: column;
 }
 
-/* Links & Buttons Reset */
+/* Links & Interactive Elements */
 a {
-  color: var(--accent-cyan);
+  color: inherit;
   text-decoration: none;
   transition: color var(--transition-fast);
-}
-
-a:hover {
-  color: var(--accent-blue);
 }
 
 button {
@@ -50,12 +49,15 @@ button {
   background: none;
   color: inherit;
   cursor: pointer;
+  transition: all var(--transition-aerospace);
 }
 
 button:focus-visible,
 a:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--accent-cyan);
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 1px solid var(--accent-cyan);
   outline-offset: 2px;
 }
 
@@ -67,67 +69,244 @@ textarea {
   color: inherit;
 }
 
-/* Scientific Numeric Data Display */
+/* Aerospace Monospace Data Display */
 .font-mono {
   font-family: var(--font-mono);
   font-feature-settings: 'tnum' on, 'lnum' on;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-/* Custom Scientific Dark Scrollbar */
+/* SpaceX-style Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-void);
+  background: var(--bg-space);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-surface-elevated);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-none);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--border-default);
+  background: rgba(255, 255, 255, 0.35);
 }
 
-/* Subtle Scientific Dot Matrix / Grid Texture */
-.scientific-grid-bg {
+/* Precision Aerospace Grid & Star Background */
+.aerospace-grid-bg {
+  background-color: var(--bg-space);
   background-image: 
-    radial-gradient(circle at 1px 1px, rgba(56, 189, 248, 0.05) 1px, transparent 0);
-  background-size: 24px 24px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 /* Status & Sample Badge Utilities */
 .badge-sample {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   padding: 3px 8px;
   font-size: 11px;
   font-family: var(--font-mono);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--accent-amber);
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(234, 179, 8, 0.08);
+  border: 1px solid rgba(234, 179, 8, 0.25);
   border-radius: var(--radius-xs);
 }
 
 .badge-source {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   padding: 3px 8px;
   font-size: 11px;
   font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--accent-cyan);
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid var(--border-subtle);
+  background: rgba(0, 210, 255, 0.06);
+  border: 1px solid rgba(0, 210, 255, 0.22);
   border-radius: var(--radius-xs);
 }
 
+/* ==========================================================================
+   SpaceX-Inspired Interactive Buttons & Link Utilities
+   ========================================================================== */
+
+/* Ghost Button with Invert Fill on Hover */
+.btn-aerospace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 28px;
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  border-radius: var(--radius-none);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-aerospace);
+}
+
+.btn-aerospace:hover {
+  background: #ffffff;
+  color: #050608;
+  border-color: #ffffff;
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.25);
+}
+
+.btn-aerospace-solid {
+  background: #ffffff;
+  color: #050608;
+  border: 1px solid #ffffff;
+}
+
+.btn-aerospace-solid:hover {
+  background: transparent;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+.btn-aerospace-cyan {
+  border-color: rgba(0, 210, 255, 0.4);
+  color: var(--accent-cyan);
+}
+
+.btn-aerospace-cyan:hover {
+  background: var(--accent-cyan);
+  color: #050608;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 24px rgba(0, 210, 255, 0.35);
+}
+
+/* Aerospace Card Hover Lift & Border Illumination */
+.aerospace-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  transition: transform var(--transition-aerospace), border-color var(--transition-aerospace), box-shadow var(--transition-aerospace);
+  position: relative;
+}
+
+.aerospace-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+}
+
+/* Image Zoom Wrapper */
+.zoom-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+
+.zoom-wrapper img,
+.zoom-wrapper .zoom-target {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.zoom-wrapper:hover img,
+.zoom-wrapper:hover .zoom-target {
+  transform: scale(1.04);
+}
+
+/* Animated Underline Effect for Links */
+.hover-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #ffffff;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-aerospace);
+}
+
+.hover-underline:hover::after,
+.hover-underline.active::after {
+  transform: scaleX(1);
+}
+
+/* Section Indices & Category Labels */
+.aerospace-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aerospace-label-accent {
+  color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   Scroll-Triggered Reveal Animations
+   ========================================================================== */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  .zoom-wrapper img,
+  .zoom-wrapper .zoom-target {
+    transform: none !important;
+  }
+  
+  .aerospace-card:hover {
+    transform: none !important;
+  }
+}
