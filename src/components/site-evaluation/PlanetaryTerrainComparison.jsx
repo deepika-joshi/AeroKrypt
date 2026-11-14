@@ -27,9 +27,20 @@ export default function PlanetaryTerrainComparison({
   initialExperimentId = null,
   onNavigate = null,
 }) {
-  const [targetBody, setTargetBody] = useState(initialTargetBody)
+  const initialLoc = initialLocationId
+    ? ANALOGUE_LOCATIONS.find((l) => l.id === initialLocationId)
+    : null
+  const determinedInitialBody = initialLoc
+    ? (initialLoc.analogueRelevance === 'MOON' || (!initialLoc.targetBodies.includes('Mars') && initialLoc.targetBodies.includes('Moon')))
+      ? 'Moon'
+      : (initialLoc.analogueRelevance === 'MARS' || (!initialLoc.targetBodies.includes('Moon') && initialLoc.targetBodies.includes('Mars')))
+      ? 'Mars'
+      : initialTargetBody
+    : initialTargetBody
+
+  const [targetBody, setTargetBody] = useState(determinedInitialBody)
   const [selectedTerrainId, setSelectedTerrainId] = useState(
-    initialTerrainId || (targetBody === 'Mars' ? 'mars-jezero-delta' : 'moon-marius-hills-skylight')
+    initialTerrainId || (determinedInitialBody === 'Mars' ? 'mars-jezero-delta' : 'moon-marius-hills-skylight')
   )
   const [selectedLocationId, setSelectedLocationId] = useState(
     initialLocationId || 'atacama-yungay'
@@ -38,6 +49,52 @@ export default function PlanetaryTerrainComparison({
     initialExperimentId || 'autonomous-rover-mobility'
   )
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('')
+
+  const handleLocationChange = (newLocId) => {
+    setSelectedLocationId(newLocId)
+    const loc = ANALOGUE_LOCATIONS.find((l) => l.id === newLocId)
+    if (loc) {
+      const isMoonOnly = loc.analogueRelevance === 'MOON' || (!loc.targetBodies.includes('Mars') && loc.targetBodies.includes('Moon'))
+      const isMarsOnly = loc.analogueRelevance === 'MARS' || (!loc.targetBodies.includes('Moon') && loc.targetBodies.includes('Mars'))
+      if (isMoonOnly && targetBody !== 'Moon') {
+        setTargetBody('Moon')
+        setSelectedTerrainId('moon-marius-hills-skylight')
+      } else if (isMarsOnly && targetBody !== 'Mars') {
+        setTargetBody('Mars')
+        setSelectedTerrainId('mars-jezero-delta')
+      }
+    }
+  }
+
+  const [prevInitialLocId, setPrevInitialLocId] = useState(initialLocationId)
+  const [prevInitialTerrainId, setPrevInitialTerrainId] = useState(initialTerrainId)
+
+  // Synchronize state during render when prop changes
+  if (initialTerrainId && initialTerrainId !== prevInitialTerrainId) {
+    setPrevInitialTerrainId(initialTerrainId)
+    setSelectedTerrainId(initialTerrainId)
+    const t = PLANETARY_TERRAIN_DATASETS.find((d) => d.id === initialTerrainId)
+    if (t) {
+      setTargetBody(t.targetBody)
+    }
+  }
+
+  if (initialLocationId && initialLocationId !== prevInitialLocId) {
+    setPrevInitialLocId(initialLocationId)
+    setSelectedLocationId(initialLocationId)
+    const loc = ANALOGUE_LOCATIONS.find((l) => l.id === initialLocationId)
+    if (loc) {
+      const isMoonOnly = loc.analogueRelevance === 'MOON' || (!loc.targetBodies.includes('Mars') && loc.targetBodies.includes('Moon'))
+      const isMarsOnly = loc.analogueRelevance === 'MARS' || (!loc.targetBodies.includes('Moon') && loc.targetBodies.includes('Mars'))
+      if (isMoonOnly && targetBody !== 'Moon') {
+        setTargetBody('Moon')
+        setSelectedTerrainId('moon-marius-hills-skylight')
+      } else if (isMarsOnly && targetBody !== 'Mars') {
+        setTargetBody('Mars')
+        setSelectedTerrainId('mars-jezero-delta')
+      }
+    }
+  }
 
   // Filter planetary datasets by target body
   const availablePlanetaryDatasets = useMemo(() => {
@@ -327,7 +384,7 @@ export default function PlanetaryTerrainComparison({
             <select
               id="comp-earth-select"
               value={earthLocation.id}
-              onChange={(e) => setSelectedLocationId(e.target.value)}
+              onChange={(e) => handleLocationChange(e.target.value)}
               style={{
                 width: '100%',
                 padding: '6px 10px',
@@ -340,7 +397,7 @@ export default function PlanetaryTerrainComparison({
             >
               {ANALOGUE_LOCATIONS.map((loc) => (
                 <option key={loc.id} value={loc.id}>
-                  {loc.name} ({loc.country}) — {loc.primaryTarget}
+                  {loc.name} ({loc.country}) — [{loc.locationCategory === 'RESEARCH_FACILITY' ? 'FACILITY' : 'NATURAL'}] {loc.analogueRelevance || loc.primaryTarget}
                 </option>
               ))}
             </select>

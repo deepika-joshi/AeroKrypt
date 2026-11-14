@@ -86,6 +86,7 @@ export function evaluateLocationMatch(location, criteria = {}) {
     maxSlopeDeg = null,
     tempRegime = 'ALL',
     requireMeasuredOnly = false,
+    locationCategory = 'ALL',
   } = criteria
 
   const criteriaAudit = []
@@ -154,6 +155,35 @@ export function evaluateLocationMatch(location, criteria = {}) {
       confidence: 'SOURCED',
       source: location.sourceAttribution.primaryCitation,
     })
+  }
+
+  // 1b. Location Classification Category Assessment (Natural Site vs. Research Facility)
+  if (locationCategory && locationCategory !== 'ALL') {
+    const isCategoryMatched = location.locationCategory === locationCategory
+    if (isCategoryMatched) {
+      criteriaAudit.push({
+        id: 'location-category',
+        name: 'Site Classification Category',
+        domain: 'OPERATIONAL',
+        status: 'MATCH',
+        evidence: `Matches requested facility category: ${location.locationCategory === 'RESEARCH_FACILITY' ? 'Research Facility' : 'Natural Field Site'}.`,
+        confidence: 'SOURCED',
+        source: 'AEROKRYPT Categorization',
+      })
+      whyItMatches.push(`Classified as ${location.locationCategory === 'RESEARCH_FACILITY' ? 'Research Facility' : 'Natural Field Site'}.`)
+    } else {
+      criteriaAudit.push({
+        id: 'location-category',
+        name: 'Site Classification Category',
+        domain: 'OPERATIONAL',
+        status: 'MISMATCH',
+        evidence: `Site is classified as ${location.locationCategory === 'RESEARCH_FACILITY' ? 'Research Facility' : 'Natural Field Site'}, diverging from requested ${locationCategory}.`,
+        confidence: 'SOURCED',
+        source: 'AEROKRYPT Categorization',
+      })
+      whyItDiverges.push(`Site is a ${location.locationCategory === 'RESEARCH_FACILITY' ? 'Research Facility' : 'Natural Field Site'}, not a ${locationCategory}.`)
+      hasMismatch = true
+    }
   }
 
   // 2. Mission Activity ConOps Assessment

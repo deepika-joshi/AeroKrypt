@@ -15,7 +15,7 @@ export default function Dashboard({ onNavigate, searchQuery = '' }) {
       id: 'location-explorer',
       idx: '02',
       title: 'Location Explore',
-      description: 'Interactive map and geospatial filtering of 6 global Earth analogue research locations.',
+      description: 'Interactive map and geospatial filtering of 20 global Earth analogue research locations.',
       tag: 'Interactive Map & Geodesy',
       icon: '🌍',
     },

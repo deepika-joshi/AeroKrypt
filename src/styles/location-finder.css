@@ -1361,6 +1361,43 @@
 }
 
 /* ==========================================================================
+   INTERACTIVE SIDE PANEL & FILTER CONTROLS (ENHANCED LOCATION EXPLORE)
+   ========================================================================== */
+
+.filter-controls-strip {
+  background-color: rgba(5, 6, 8, 0.98);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.location-side-panel {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+
+.location-side-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.location-side-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.location-side-panel::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+
+@media (max-width: 1024px) {
+  .location-map-section > div[style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ==========================================================================
    RESPONSIVENESS
    ========================================================================== */
 

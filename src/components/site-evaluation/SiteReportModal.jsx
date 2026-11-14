@@ -1,5 +1,5 @@
 export default function SiteReportModal({
-  isOpen,
+  isOpen = true,
   onClose,
   evaluationData,
 }) {

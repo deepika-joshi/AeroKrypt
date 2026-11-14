@@ -22,9 +22,19 @@ export default function SiteEvaluation({
   const [selectedLocationId, setSelectedLocationId] = useState(
     initialLocationId || ANALOGUE_LOCATIONS[0].id
   )
+  const [prevInitialLocId, setPrevInitialLocId] = useState(initialLocationId)
+  if (initialLocationId && initialLocationId !== prevInitialLocId) {
+    setPrevInitialLocId(initialLocationId)
+    setSelectedLocationId(initialLocationId)
+  }
   const [selectedExperimentId, setSelectedExperimentId] = useState(
     initialExperimentId || ''
   )
+  const [prevInitialExpId, setPrevInitialExpId] = useState(initialExperimentId)
+  if (initialExperimentId && initialExperimentId !== prevInitialExpId) {
+    setPrevInitialExpId(initialExperimentId)
+    setSelectedExperimentId(initialExperimentId)
+  }
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('ALL')
 
@@ -71,7 +81,7 @@ export default function SiteEvaluation({
             >
               {ANALOGUE_LOCATIONS.map((loc) => (
                 <option key={loc.id} value={loc.id}>
-                  {loc.name} ({loc.country}) — {loc.primaryTarget}
+                  {loc.name} ({loc.country}) — [{loc.locationCategory === 'RESEARCH_FACILITY' ? 'FACILITY' : 'NATURAL'}] {loc.analogueRelevance || loc.primaryTarget}
                 </option>
               ))}
             </select>
@@ -269,6 +279,7 @@ export default function SiteEvaluation({
       {/* Printable / Exportable Site Dossier Modal */}
       {isReportModalOpen && (
         <SiteReportModal
+          isOpen={isReportModalOpen}
           evaluationData={evaluationData}
           onClose={() => setIsReportModalOpen(false)}
         />

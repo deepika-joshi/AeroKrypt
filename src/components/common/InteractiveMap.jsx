@@ -15,6 +15,7 @@ export default function InteractiveMap({
   height = '480px',
   center = null,
   zoom = null,
+  defaultZoom = null,
   showLayerSwitcher = true,
   showLegend = true,
 }) {
@@ -35,7 +36,7 @@ export default function InteractiveMap({
   // Default coordinate centers per planetary body
   const defaultCenter =
     center || (mode === 'mars' ? [0, 0] : mode === 'moon' ? [0, 0] : [20, 0])
-  const defaultZoom = zoom || (mode === 'earth' ? 2 : 1)
+  const effectiveZoom = zoom || defaultZoom || (mode === 'earth' ? 2 : 1)
 
   // When mode changes externally, auto-switch to body default
   useEffect(() => {
@@ -48,14 +49,28 @@ export default function InteractiveMap({
     }
   }, [mode, currentBasemap])
 
+  // Invalidate map size after mount and after mode/height changes to ensure tiles fill container
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize()
+      }
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [mode, height])
+
   // Initialize Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current) return
     if (mapInstanceRef.current) return
 
+    if (mapContainerRef.current._leaflet_id) {
+      delete mapContainerRef.current._leaflet_id
+    }
+
     const map = L.map(mapContainerRef.current, {
       center: defaultCenter,
-      zoom: defaultZoom,
+      zoom: effectiveZoom,
       minZoom: 1,
       maxZoom: mode === 'earth' ? 18 : 7,
       worldCopyJump: true,
@@ -163,15 +178,18 @@ export default function InteractiveMap({
       if (isNaN(lat) || isNaN(lng)) return
 
       const isCurrentActive = activeLocationId === loc.id
+      const isFacility = loc.locationCategory === 'RESEARCH_FACILITY'
       const markerColor = isCurrentActive
         ? '#eab308'
         : mode === 'mars'
         ? '#f97316'
         : mode === 'moon'
         ? '#cbd5e1'
+        : isFacility
+        ? '#c084fc'
         : '#00d2ff'
 
-      const glyph = mode === 'mars' ? '♂' : mode === 'moon' ? '☾' : '⊕'
+      const glyph = mode === 'mars' ? '♂' : mode === 'moon' ? '☾' : isFacility ? '⌂' : '⊕'
 
       const marker = L.marker([lat, lng], {
         icon: createCustomIcon(markerColor, glyph),
@@ -182,6 +200,18 @@ export default function InteractiveMap({
       const popupDiv = document.createElement('div')
       popupDiv.className = 'map-leaflet-popup font-mono'
       popupDiv.innerHTML = `
+        <div style="margin-bottom: 4px;">
+          ${loc.locationCategory ? `
+            <span style="display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 2px; text-transform: uppercase; background: ${isFacility ? 'rgba(192,132,252,0.2)' : 'rgba(0,210,255,0.15)'}; color: ${isFacility ? '#c084fc' : '#00d2ff'}; border: 1px solid ${isFacility ? '#c084fc' : '#00d2ff'}; margin-bottom: 3px;">
+              ${isFacility ? 'Research Facility' : 'Natural Field Site'}
+            </span>
+          ` : ''}
+          ${loc.verificationStatus ? `
+            <span style="display: inline-block; font-size: 8px; font-weight: 700; padding: 1px 4px; border-radius: 2px; text-transform: uppercase; background: rgba(255,255,255,0.08); color: ${loc.verificationStatus === 'VERIFIED' ? '#4ade80' : '#facc15'}; margin-left: 2px;">
+              ${loc.verificationStatus}
+            </span>
+          ` : ''}
+        </div>
         <div style="font-weight: 800; font-size: 13px; color: #050608; margin-bottom: 4px; text-transform: uppercase;">
           ${loc.name}
         </div>
@@ -189,9 +219,9 @@ export default function InteractiveMap({
           ${loc.region || loc.planetaryRegion || ''} &bull; <strong>${coordStr}</strong>
         </div>
         <div style="font-size: 11px; color: #0284c7; margin-bottom: 8px;">
-          <strong>Target:</strong> ${loc.targetBody || loc.primaryTarget || 'Planetary'} Analogue
+          <strong>Target:</strong> ${loc.analogueRelevance || loc.targetBody || loc.primaryTarget || 'Planetary'} Analogue
           <br><strong>Relief:</strong> ${loc.elevation?.label || loc.elevation?.nominalM + 'm' || 'Documented'}
-          <br><strong>Slope:</strong> ${loc.slope?.typicalDeg ? loc.slope.typicalDeg + '° typical' : 'Curated'}
+          <br><strong>Slope:</strong> ${loc.slope?.typicalDeg !== undefined ? loc.slope.typicalDeg + '° typical' : 'Curated'}
         </div>
         <div style="display: flex; gap: 6px; margin-top: 8px;">
           <button id="btn-view-profile-${loc.id}" style="background: #050608; color: #ffffff; border: none; padding: 4px 8px; font-size: 10px; border-radius: 2px; cursor: pointer; text-transform: uppercase; font-family: monospace;">
@@ -204,6 +234,12 @@ export default function InteractiveMap({
       `
 
       marker.bindPopup(popupDiv)
+
+      marker.on('click', () => {
+        if (onSelectLocation) {
+          onSelectLocation(loc.id)
+        }
+      })
 
       marker.on('popupopen', () => {
         const btnProfile = document.getElementById(`btn-view-profile-${loc.id}`)
@@ -493,17 +529,60 @@ export default function InteractiveMap({
 }
 
 /**
+ * Creates an aerospace-styled circular marker with target glyph
+ */
+function createCustomIcon(markerColor, glyph) {
+  return L.divIcon({
+    className: 'custom-aerospace-marker',
+    html: `
+      <div style="
+        width: 26px;
+        height: 26px;
+        background: ${markerColor};
+        border-radius: 50%;
+        border: 2px solid #ffffff;
+        box-shadow: 0 0 10px ${markerColor}, 0 2px 6px rgba(0,0,0,0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #050608;
+        font-weight: 900;
+        font-size: 13px;
+        line-height: 1;
+        font-family: monospace;
+        cursor: pointer;
+      ">${glyph}</div>
+    `,
+    iconSize: [26, 26],
+    iconAnchor: [13, 13],
+    popupAnchor: [0, -14],
+  })
+}
+
+/**
  * Parses DMS (e.g., 24°04′S, 69°59′W) or decimal degrees into float
  */
 function parseDmsOrDecimal(coordStr) {
   if (!coordStr) return NaN
-  const str = coordStr.trim()
+  const str = String(coordStr).trim()
 
-  // Match decimal degrees e.g. 18.38°N, -24.0667, 77.58°E
+  // Match decimal degrees e.g. 18.38°N, -24.0667, 77.58°E, 18.38 N
   const decMatch = str.match(/^([+-]?\d+(?:\.\d+)?)\s*°?\s*([NSEW])?$/i)
   if (decMatch) {
     let val = parseFloat(decMatch[1])
     const dir = decMatch[2]?.toUpperCase()
+    if (dir === 'S' || dir === 'W') val = -val
+    return val
+  }
+
+  // Match DMS with seconds e.g. 24°04′30″S or 24 04 30 S
+  const dmsWithSec = str.match(/^(\d+)[°\s]+(\d+)[′']?\s*(\d+(?:\.\d+)?)[″"]?\s*([NSEW])?$/i)
+  if (dmsWithSec) {
+    const deg = parseFloat(dmsWithSec[1])
+    const min = parseFloat(dmsWithSec[2])
+    const sec = parseFloat(dmsWithSec[3])
+    let val = deg + min / 60 + sec / 3600
+    const dir = dmsWithSec[4]?.toUpperCase()
     if (dir === 'S' || dir === 'W') val = -val
     return val
   }

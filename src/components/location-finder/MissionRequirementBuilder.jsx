@@ -67,6 +67,29 @@ export default function MissionRequirementBuilder({
           </div>
         </div>
 
+        {/* 1b. Site Category Filter */}
+        <div className="form-group">
+          <label className="form-label" htmlFor="category-toggle-select">
+            Site Classification Category
+          </label>
+          <div className="planetary-toggle-group" id="category-toggle-select">
+            {[
+              { id: 'ALL', label: 'All Sites (20)' },
+              { id: 'NATURAL_SITE', label: 'Natural Sites (16)' },
+              { id: 'RESEARCH_FACILITY', label: 'Research Facilities (4)' },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`toggle-option ${criteria.locationCategory === cat.id ? 'active' : ''}`}
+                onClick={() => onCriteriaChange({ ...criteria, locationCategory: cat.id })}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* 2. Mission Activity ConOps */}
         <div className="form-group">
           <label className="form-label" htmlFor="mission-activity-select">
@@ -101,6 +124,7 @@ export default function MissionRequirementBuilder({
             }
           >
             <option value="ALL">All Geological Substrates</option>
+            <option value="Anorthosite">Anorthosite &amp; Calcic Plagioclase (Lunar Highland)</option>
             <option value="Basalt">Basaltic Lava &amp; Volcanic Flows</option>
             <option value="Permafrost">Ice-Cemented Permafrost &amp; Ground Ice</option>
             <option value="Perchlorate">Perchlorate &amp; Nitrate Soil</option>

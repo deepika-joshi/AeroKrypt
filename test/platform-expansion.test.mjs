@@ -284,3 +284,135 @@ test('SECTION 4: Research Workflow Lifecycle, Draft Separation, Audit History, a
     'Test submission cleanly deleted'
   )
 })
+
+test('SECTION 5: Expanded Earth Analogue Location Database & Multi-Body Classification Verification', async () => {
+  const { ANALOGUE_LOCATIONS } = await import('../src/data/locationsData.js')
+  const { matchLocations } = await import('../src/services/locationMatcher.js')
+
+  // 1. Total Curated Locations Count
+  assert.equal(ANALOGUE_LOCATIONS.length, 20, 'Curated Earth Analogue database contains exactly 20 locations')
+
+  // 2. Zero Duplicates
+  const ids = ANALOGUE_LOCATIONS.map((l) => l.id)
+  const names = ANALOGUE_LOCATIONS.map((l) => l.name)
+  assert.equal(new Set(ids).size, 20, 'Zero duplicate location IDs across the 20 sites')
+  assert.equal(new Set(names).size, 20, 'Zero duplicate location names across the 20 sites')
+
+  // 3. Schema Completeness for All 20 Locations
+  for (const loc of ANALOGUE_LOCATIONS) {
+    assert.ok(
+      loc.locationCategory === 'NATURAL_SITE' || loc.locationCategory === 'RESEARCH_FACILITY',
+      `Site [${loc.id}] has valid locationCategory ('NATURAL_SITE' or 'RESEARCH_FACILITY')`
+    )
+    assert.ok(
+      loc.analogueRelevance === 'MARS' || loc.analogueRelevance === 'MOON' || loc.analogueRelevance === 'BOTH',
+      `Site [${loc.id}] has valid analogueRelevance ('MARS', 'MOON', or 'BOTH')`
+    )
+    assert.ok(
+      loc.verificationStatus === 'VERIFIED' || loc.verificationStatus === 'PARTIALLY_VERIFIED' || loc.verificationStatus === 'UNVERIFIED',
+      `Site [${loc.id}] has valid verificationStatus`
+    )
+    assert.ok(
+      loc.userSuppliedCoordinates &&
+      typeof loc.userSuppliedCoordinates.latitude === 'number' &&
+      typeof loc.userSuppliedCoordinates.longitude === 'number',
+      `Site [${loc.id}] preserves userSuppliedCoordinates { latitude, longitude }`
+    )
+  }
+
+  // 4. Research Facilities vs Natural Sites Classification
+  const facilities = ANALOGUE_LOCATIONS.filter((l) => l.locationCategory === 'RESEARCH_FACILITY')
+  const naturalSites = ANALOGUE_LOCATIONS.filter((l) => l.locationCategory === 'NATURAL_SITE')
+  assert.equal(facilities.length, 4, 'Exactly 4 sites classified as RESEARCH_FACILITY (MDRS, HI-SEAS, LUNA, Cinder Lake)')
+  assert.equal(naturalSites.length, 16, 'Exactly 16 sites classified as NATURAL_SITE')
+
+  const facilityIds = facilities.map((f) => f.id).sort()
+  assert.deepEqual(
+    facilityIds,
+    ['cinder-lake-crater-field', 'luna-facility-cologne', 'mauna-loa-hi-seas', 'san-rafael-mdrs'].sort(),
+    'Specific facilities match documented human-built/engineered testing centers'
+  )
+
+  // 5. Namakkal Anorthosite Investigation (Lunar Highland, NOT Mars)
+  const namakkal = ANALOGUE_LOCATIONS.find((l) => l.id === 'namakkal-anorthosite')
+  assert.ok(namakkal, 'Namakkal anorthosite location is present')
+  assert.equal(namakkal.analogueRelevance, 'MOON', 'Namakkal is classified as MOON analogue, NOT Mars')
+  assert.equal(namakkal.targetBodies.includes('Mars'), false, 'Namakkal does NOT target Mars')
+  assert.ok(namakkal.targetBodies.includes('Moon'), 'Namakkal targets Moon')
+  assert.ok(
+    namakkal.lithology.some((r) => r.toLowerCase().includes('anorthosite') || r.toLowerCase().includes('plagioclase')),
+    'Namakkal lithology features anorthosite / calcic plagioclase'
+  )
+  assert.ok(
+    namakkal.scientificFidelity.some((f) => f.includes('LSS-ISRO') || f.includes('Chandrayaan')),
+    'Namakkal documents LSS-ISRO lunar soil simulant production for Chandrayaan-2/3'
+  )
+
+  // 6. Tso Kar Valley & Ladakh Cold Desert (ISRO HOPE Mission Verification)
+  const ladakh = ANALOGUE_LOCATIONS.find((l) => l.id === 'ladakh-tso-kar')
+  assert.ok(ladakh, 'Ladakh Tso Kar location is present')
+  assert.ok(ladakh.elevation.value >= 4500, 'Tso Kar elevation is >= 4,500 m')
+  assert.ok(ladakh.atmosphericPressure.value <= 60.0, 'Tso Kar barometric pressure is hypobaric (<= 60.0 kPa)')
+  assert.ok(
+    ladakh.scientificFidelity.some((f) => f.includes('HOPE') || f.includes('ISRO')),
+    'Ladakh documents verified ISRO HOPE analogue mission'
+  )
+  assert.ok(
+    ladakh.sourceVerificationRegistry.some((r) => r.claimSupported.includes('HOPE')),
+    'Ladakh source verification registry cites ISRO HOPE mission verification'
+  )
+
+  // 7. Meteor Crater vs Cinder Lake Separation
+  const meteorCrater = ANALOGUE_LOCATIONS.find((l) => l.id === 'meteor-crater-arizona')
+  const cinderLake = ANALOGUE_LOCATIONS.find((l) => l.id === 'cinder-lake-crater-field')
+  assert.ok(meteorCrater, 'Meteor Crater is present')
+  assert.ok(cinderLake, 'Cinder Lake is present')
+  assert.notEqual(meteorCrater.id, cinderLake.id, 'Meteor Crater and Cinder Lake are separate locations')
+  assert.equal(meteorCrater.locationCategory, 'NATURAL_SITE', 'Meteor Crater is a natural impact crater')
+  assert.equal(cinderLake.locationCategory, 'RESEARCH_FACILITY', 'Cinder Lake is an artificial crater field')
+
+  // 8. Krafla vs Vatnajökull Separation
+  const krafla = ANALOGUE_LOCATIONS.find((l) => l.id === 'iceland-krafla')
+  const vatnajokull = ANALOGUE_LOCATIONS.find((l) => l.id === 'iceland-vatnajokull')
+  assert.ok(krafla, 'Krafla is present')
+  assert.ok(vatnajokull, 'Vatnajökull is present')
+  assert.notEqual(krafla.id, vatnajokull.id, 'Krafla and Vatnajökull are separate locations')
+  assert.ok(krafla.lithology.some((l) => l.toLowerCase().includes('silica') || l.toLowerCase().includes('sulfur')), 'Krafla features hydrothermal silica/sulfate')
+  assert.ok(vatnajokull.lithology.some((l) => l.toLowerCase().includes('hyaloclastite') || l.toLowerCase().includes('ice')), 'Vatnajökull features glaciovolcanic hyaloclastites')
+
+  // 9. Sudbury vs Mistastin Separation
+  const sudbury = ANALOGUE_LOCATIONS.find((l) => l.id === 'sudbury-basin')
+  const mistastin = ANALOGUE_LOCATIONS.find((l) => l.id === 'mistastin-crater')
+  assert.ok(sudbury, 'Sudbury is present')
+  assert.ok(mistastin, 'Mistastin is present')
+  assert.notEqual(sudbury.id, mistastin.id, 'Sudbury and Mistastin are separate locations')
+  assert.ok(
+    mistastin.lithology.some((l) => l.toLowerCase().includes('maskelynite') || l.toLowerCase().includes('anorthosite')),
+    'Mistastin features shocked anorthosite and maskelynite'
+  )
+
+  // 10. Reykjanes vs Askja Separation
+  const reykjanes = ANALOGUE_LOCATIONS.find((l) => l.id === 'iceland-reykjanes')
+  const askja = ANALOGUE_LOCATIONS.find((l) => l.id === 'iceland-askja')
+  assert.ok(reykjanes, 'Reykjanes is present')
+  assert.ok(askja, 'Askja is present')
+  assert.notEqual(reykjanes.id, askja.id, 'Reykjanes and Askja are separate locations')
+  assert.ok(
+    askja.scientificFidelity.some((f) => f.includes('Apollo') && (f.includes('Armstrong') || f.includes('32'))),
+    'Askja documents historic Apollo astronaut training (Neil Armstrong)'
+  )
+
+  // 11. Datong Volcanic Group Verification
+  const datong = ANALOGUE_LOCATIONS.find((l) => l.id === 'datong-volcanic-group')
+  assert.ok(datong, 'Datong is present')
+  assert.equal(datong.verificationStatus, 'PARTIALLY_VERIFIED', 'Datong is classified as PARTIALLY_VERIFIED')
+  assert.equal(datong.primaryTarget, 'Moon', 'Datong primary target is Moon')
+
+  // 12. Category-Aware Filtering
+  const facilityMatches = matchLocations(ANALOGUE_LOCATIONS, { locationCategory: 'RESEARCH_FACILITY' })
+  const facilityMatchedSites = facilityMatches.filter((m) => m.overallAlignment.key === 'HIGH_ALIGNMENT')
+  assert.equal(facilityMatchedSites.length, 4, 'Matching on RESEARCH_FACILITY filters exactly 4 facility sites')
+  for (const m of facilityMatchedSites) {
+    assert.equal(m.location.locationCategory, 'RESEARCH_FACILITY', `Matched site [${m.location.id}] is a RESEARCH_FACILITY`)
+  }
+})

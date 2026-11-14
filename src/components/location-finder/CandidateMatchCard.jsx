@@ -33,16 +33,54 @@ export default function CandidateMatchCard({
       {/* Top Banner: Alignment Status & Match Counts */}
       <div className="candidate-card-top">
         <div className="candidate-card-title-group">
-          <div className="candidate-meta-line">
+          <div className="candidate-meta-line" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
             <span className="candidate-target-body font-mono">
-              {location.primaryTarget} ANALOGUE
+              {location.analogueRelevance ? `${location.analogueRelevance} ANALOGUE` : `${location.primaryTarget} ANALOGUE`}
             </span>
+            <span
+              className="candidate-category-badge font-mono"
+              style={{
+                fontSize: '9px',
+                padding: '1px 5px',
+                borderRadius: '2px',
+                background: location.locationCategory === 'RESEARCH_FACILITY' ? 'rgba(192, 132, 252, 0.15)' : 'rgba(0, 210, 255, 0.12)',
+                color: location.locationCategory === 'RESEARCH_FACILITY' ? '#c084fc' : '#00d2ff',
+                border: `1px solid ${location.locationCategory === 'RESEARCH_FACILITY' ? '#c084fc' : '#00d2ff'}`,
+                fontWeight: 600,
+                letterSpacing: '0.05em',
+              }}
+            >
+              {location.locationCategory === 'RESEARCH_FACILITY' ? 'RESEARCH FACILITY' : 'NATURAL FIELD SITE'}
+            </span>
+            {location.verificationStatus && (
+              <span
+                className="candidate-verif-badge font-mono"
+                style={{
+                  fontSize: '9px',
+                  padding: '1px 5px',
+                  borderRadius: '2px',
+                  background: 'rgba(255, 255, 255, 0.06)',
+                  color: location.verificationStatus === 'VERIFIED' ? '#4ade80' : '#facc15',
+                  border: `1px solid ${location.verificationStatus === 'VERIFIED' ? 'rgba(74, 222, 128, 0.4)' : 'rgba(250, 204, 21, 0.4)'}`,
+                  fontWeight: 600,
+                }}
+              >
+                {location.verificationStatus}
+              </span>
+            )}
             <span className="candidate-geo">
               {location.region}, {location.country}
             </span>
           </div>
           <h3 className="candidate-name">{location.name}</h3>
-          <span className="candidate-coords font-mono">{location.coordinates}</span>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginTop: '2px' }}>
+            <span className="candidate-coords font-mono">{location.coordinates}</span>
+            {location.userSuppliedCoordinates && (
+              <span className="font-mono" style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+                [Ref: {location.userSuppliedCoordinates.latitude}, {location.userSuppliedCoordinates.longitude}]
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="candidate-alignment-status">

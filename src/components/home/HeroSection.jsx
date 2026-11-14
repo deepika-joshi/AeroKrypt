@@ -1,3 +1,7 @@
+import { ANALOGUE_LOCATIONS } from '../../data/locationsData.js'
+import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
+import { MISSION_OBJECTIVES } from '../../data/missionObjectives.js'
+
 export default function HeroSection({ onNavigate, onExploreClick }) {
   const handleScrollDown = () => {
     if (onExploreClick) {
@@ -97,23 +101,23 @@ export default function HeroSection({ onNavigate, onExploreClick }) {
         {/* 4. Bottom Hero Metrics Strip */}
         <div className="hero-metrics-strip font-mono">
           <div className="metric-cell">
-            <div className="metric-number">06</div>
-            <div className="metric-desc">AUDITED EARTH SITES</div>
+            <div className="metric-number">{ANALOGUE_LOCATIONS.length.toString().padStart(2, '0')}</div>
+            <div className="metric-desc">CURATED EARTH SITES</div>
           </div>
           <div className="metric-divider" />
           <div className="metric-cell">
-            <div className="metric-number">11</div>
+            <div className="metric-number">{PLANETARY_TERRAIN_DATASETS.length.toString().padStart(2, '0')}</div>
             <div className="metric-desc">PLANETARY TERRAINS</div>
           </div>
           <div className="metric-divider" />
           <div className="metric-cell">
-            <div className="metric-number">05</div>
+            <div className="metric-number">{MISSION_OBJECTIVES.length.toString().padStart(2, '0')}</div>
             <div className="metric-desc">CONOPS PROTOCOLS</div>
           </div>
           <div className="metric-divider" />
           <div className="metric-cell">
-            <div className="metric-number">100%</div>
-            <div className="metric-desc">VERIFIED PROVENANCE</div>
+            <div className="metric-number">TIERED</div>
+            <div className="metric-desc">EVIDENCE REGISTRY</div>
           </div>
         </div>
       </div>

@@ -171,3 +171,15 @@ table tr:hover td {
   background-color: var(--bg-surface-hover) !important;
   color: var(--accent-cyan) !important;
 }
+
+/* Reset default Leaflet divIcon square styling */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-aerospace-marker {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}

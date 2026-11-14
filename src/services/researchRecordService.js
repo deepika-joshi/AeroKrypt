@@ -496,7 +496,7 @@ export function saveDraftSubmission(submissionData) {
   }
 
   const itemToSave = {
-    id: submissionData.id || `sub-${Date.now()}`,
+    id: submissionData.id || `sub-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     createdAt: existing?.createdAt || submissionData.createdAt || now,
     updatedAt: now,
     submissionDate: submissionData.submissionDate || existing?.submissionDate || nowShort,

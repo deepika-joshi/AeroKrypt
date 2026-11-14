@@ -4,6 +4,7 @@ import LocationFinder from './components/location-finder/LocationFinder.jsx'
 import SiteEvaluation from './components/site-evaluation/SiteEvaluation.jsx'
 import ResearchHub from './components/research-hub/ResearchHub.jsx'
 import PublicDiscovery from './components/public-discovery/PublicDiscovery.jsx'
+import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import './App.css'
 
 function App() {
@@ -19,33 +20,39 @@ function App() {
         // 1. Dashboard
         if (activeNav.id === 'dashboard') {
           return (
-            <Dashboard
-              onNavigate={onNavigate}
-              searchQuery={searchQuery}
-            />
+            <ErrorBoundary title="Dashboard Telemetry Error">
+              <Dashboard
+                onNavigate={onNavigate}
+                searchQuery={searchQuery}
+              />
+            </ErrorBoundary>
           )
         }
 
         // 2. Location Explore
         if (activeNav.id === 'location-explorer' || activeNav.id === 'location-explore') {
           return (
-            <LocationFinder
-              prefocusedLocationId={navigationParams?.locationId}
-              onClearPrefocus={onClearNavigationParams}
-              onNavigate={onNavigate}
-            />
+            <ErrorBoundary title="Location Explore Anomaly">
+              <LocationFinder
+                prefocusedLocationId={navigationParams?.locationId}
+                onClearPrefocus={onClearNavigationParams}
+                onNavigate={onNavigate}
+              />
+            </ErrorBoundary>
           )
         }
 
         // 3. Site Evaluation (merged with Planetary Comparison)
         if (activeNav.id === 'site-evaluation' || activeNav.id === 'planetary-comparison') {
           return (
-            <SiteEvaluation
-              initialLocationId={navigationParams?.locationId}
-              initialTerrainId={navigationParams?.terrainId}
-              initialExperimentId={navigationParams?.experimentId}
-              onNavigate={onNavigate}
-            />
+            <ErrorBoundary title="Site Evaluation Engine Anomaly">
+              <SiteEvaluation
+                initialLocationId={navigationParams?.locationId}
+                initialTerrainId={navigationParams?.terrainId}
+                initialExperimentId={navigationParams?.experimentId}
+                onNavigate={onNavigate}
+              />
+            </ErrorBoundary>
           )
         }
 
@@ -65,28 +72,34 @@ function App() {
               : 'experiments')
 
           return (
-            <ResearchHub
-              initialSubview={subview}
-              onNavigate={onNavigate}
-            />
+            <ErrorBoundary title="Research Hub Telemetry Anomaly">
+              <ResearchHub
+                initialSubview={subview}
+                onNavigate={onNavigate}
+              />
+            </ErrorBoundary>
           )
         }
 
         // 5. Public Discovery
         if (activeNav.id === 'public-discovery') {
           return (
-            <PublicDiscovery
-              onNavigate={onNavigate}
-            />
+            <ErrorBoundary title="Public Discovery Archive Anomaly">
+              <PublicDiscovery
+                onNavigate={onNavigate}
+              />
+            </ErrorBoundary>
           )
         }
 
         // Default fallback to Dashboard
         return (
-          <Dashboard
-            onNavigate={onNavigate}
-            searchQuery={searchQuery}
-          />
+          <ErrorBoundary title="System Dashboard Anomaly">
+            <Dashboard
+              onNavigate={onNavigate}
+              searchQuery={searchQuery}
+            />
+          </ErrorBoundary>
         )
       }}
     </AppLayout>
