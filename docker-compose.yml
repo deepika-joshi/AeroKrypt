@@ -31,6 +31,7 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql+psycopg2://aerokrypt_user:aerokrypt_secure_password_dev@db:5432/aerokrypt
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-aerokrypt_planetary_research_jwt_secret_key_2026_supersecure_32b}
       ENVIRONMENT: development
       PORT: 8000
       RASTER_CACHE_DIR: /app/raster_cache

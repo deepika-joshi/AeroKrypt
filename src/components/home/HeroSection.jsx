@@ -58,8 +58,7 @@ export default function HeroSection({ onNavigate, onExploreClick }) {
         </h1>
 
         <p className="hero-tagline-text">
-          Validating off-world surface architectures through rigorous terrestrial geodesy,
-          peer-reviewed field analogues, and authentic Mars MOLA and Lunar LOLA topography.
+          Evaluate Earth sites for Mars and Moon research using real terrain data, geological evidence and documented field studies.
         </p>
 
         {/* SpaceX-Inspired Ghost Buttons */}
@@ -81,7 +80,7 @@ export default function HeroSection({ onNavigate, onExploreClick }) {
             className="btn-aerospace"
             onClick={() => onNavigate && onNavigate('site-evaluation')}
           >
-            <span>LAUNCH SITE EVALUATION</span>
+            <span>ANALOGUE SITE ASSESSMENT</span>
             <span className="btn-arrow">&rarr;</span>
           </button>
 

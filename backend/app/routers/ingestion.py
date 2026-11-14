@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime
+from typing import Optional
 import uuid
 from app.schemas.schemas import IngestionTaskRequest, IngestionTaskResponse
 from app.services.stac_client import planetary_api_client
@@ -33,11 +34,13 @@ def get_task_status(task_id: str):
     }
 
 @router.get("/stac/search")
-async def search_stac(target_body: str = "Mars"):
+async def search_stac(target_body: str = "Mars", agency: Optional[str] = None):
     """
     Searches space agency STAC catalogs for available orbital datasets.
     """
-    if target_body.lower() == "earth":
+    if agency and agency.lower() == "usgs":
         return await planetary_api_client.query_usgs_3dep({"north": 40.0, "south": 35.0, "east": -110.0, "west": -115.0})
+    if target_body.lower() == "earth" or (agency and "copernicus" in agency.lower()):
+        return await planetary_api_client.query_copernicus_glo30({"north": 40.0, "south": 35.0, "east": -110.0, "west": -115.0})
     return await planetary_api_client.query_nasa_pds(target_body)
 

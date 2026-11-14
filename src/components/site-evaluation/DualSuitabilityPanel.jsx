@@ -1,4 +1,4 @@
-export default function DualSuitabilityPanel({ geologicalSimilarity, operationalSuitability, experiment }) {
+export default function DualSuitabilityPanel({ geologicalSimilarity, operationalSuitability, experiment, backendAssessment = null }) {
   if (!geologicalSimilarity || !operationalSuitability) return null
 
   return (
@@ -19,6 +19,11 @@ export default function DualSuitabilityPanel({ geologicalSimilarity, operational
             <div className="panel-header-title">
               <span className="domain-tag font-mono">DOMAIN 1: GEOLOGY &amp; LITHOLOGY</span>
               <h4 className="panel-heading">Geological Similarity Assessment</h4>
+              {backendAssessment?.geological_fidelity && (
+                <div style={{ marginTop: '4px', fontSize: '10.5px', color: '#38bdf8' }} className="font-mono">
+                  ⚡ API Alignment: {backendAssessment.geological_fidelity.lithology_alignment}
+                </div>
+              )}
             </div>
             <span className={`rating-badge rating-${geologicalSimilarity.lithologyMatch.toLowerCase()}`}>
               Similarity: {geologicalSimilarity.lithologyMatch}
@@ -70,6 +75,11 @@ export default function DualSuitabilityPanel({ geologicalSimilarity, operational
             <div className="panel-header-title">
               <span className="domain-tag font-mono">DOMAIN 2: CONOPS &amp; FIELD TESTING</span>
               <h4 className="panel-heading">Operational Suitability Assessment</h4>
+              {backendAssessment?.operational_suitability && (
+                <div style={{ marginTop: '4px', fontSize: '10.5px', color: '#fb923c' }} className="font-mono">
+                  ⚡ API Mobility Rating: {backendAssessment.operational_suitability.vehicle_mobility_rating}
+                </div>
+              )}
             </div>
             <span className={`rating-badge rating-${operationalSuitability.slopeStatus.toLowerCase().includes('comp') ? 'high' : 'moderate'}`}>
               Slope: {operationalSuitability.slopeStatus}

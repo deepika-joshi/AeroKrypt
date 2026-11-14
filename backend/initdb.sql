@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS planetary_reference_terrains (
 -- 4. Site Evaluation Dossiers Table
 CREATE TABLE IF NOT EXISTS site_evaluations (
     id VARCHAR(64) PRIMARY KEY,
+    project_id VARCHAR(64),
     location_id VARCHAR(64) REFERENCES analogue_locations(id),
     target_body VARCHAR(50) NOT NULL,
     planetary_terrain_id VARCHAR(64) REFERENCES planetary_reference_terrains(id),
@@ -94,6 +95,8 @@ CREATE TABLE IF NOT EXISTS site_evaluations (
     divergent_factors TEXT[],
     strengths TEXT[],
     limitations TEXT[],
+    evaluation_version VARCHAR(50) DEFAULT 'AEROKRYPT_SITE_EVAL_V2',
+    source_data_provenance JSONB,
     evaluation_json JSONB NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -115,3 +118,104 @@ CREATE TABLE IF NOT EXISTS pds_raster_assets (
     ingested_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ============================================================================
+-- AEROKRYPT RESEARCHER AUTHENTICATION & PRIVATE WORKSPACE SCHEMA
+-- ============================================================================
+
+-- 6. Researchers Table (User Identity & Role-Based Access Control)
+CREATE TABLE IF NOT EXISTS researchers (
+    id VARCHAR(64) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    institution VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'RESEARCHER', -- 'RESEARCHER' | 'REVIEWER' | 'ADMIN'
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_researchers_email ON researchers(email);
+
+-- 7. Private Research Records Table (Strictly Isolated Workspace)
+CREATE TABLE IF NOT EXISTS research_records (
+    id VARCHAR(64) PRIMARY KEY,
+    researcher_id VARCHAR(64) NOT NULL REFERENCES researchers(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    abstract TEXT,
+    objective TEXT,
+    category VARCHAR(100) NOT NULL DEFAULT 'ANALOGUE_GEOLOGY',
+    target_body VARCHAR(50) NOT NULL DEFAULT 'Mars', -- 'Mars' | 'Moon' | 'Dual'
+    location_id VARCHAR(64) REFERENCES analogue_locations(id) ON DELETE SET NULL,
+    experiment_name VARCHAR(255),
+    methodology TEXT,
+    observations TEXT,
+    findings TEXT,
+    research_notes TEXT,
+    collaborators JSONB,
+    experiment_params JSONB,
+    field_observations JSONB,
+    environmental_measurements JSONB,
+    geological_observations JSONB,
+    instrument_readings JSONB,
+    attachments JSONB,
+    saved_evaluations_json JSONB,
+    status VARCHAR(50) NOT NULL DEFAULT 'DRAFT', -- 'DRAFT' | 'COMPLETED' | 'SUBMITTED'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_research_records_researcher ON research_records(researcher_id);
+CREATE INDEX IF NOT EXISTS idx_research_records_status ON research_records(status);
+
+-- 8. Research References Table (DOI Citations & Verified Literature)
+CREATE TABLE IF NOT EXISTS research_references (
+    id SERIAL PRIMARY KEY,
+    record_id VARCHAR(64) NOT NULL REFERENCES research_records(id) ON DELETE CASCADE,
+    doi VARCHAR(150),
+    title VARCHAR(255) NOT NULL,
+    authors TEXT,
+    journal VARCHAR(255),
+    year INTEGER,
+    url TEXT,
+    citation_status VARCHAR(50) DEFAULT 'UNVERIFIED', -- 'VERIFIED_DOI' | 'PREPRINT' | 'UNVERIFIED'
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_research_refs_record ON research_references(record_id);
+
+-- 9. Research Submissions Table (Peer Review Pipeline)
+CREATE TABLE IF NOT EXISTS research_submissions (
+    id VARCHAR(64) PRIMARY KEY,
+    record_id VARCHAR(64) NOT NULL REFERENCES research_records(id) ON DELETE CASCADE,
+    researcher_id VARCHAR(64) NOT NULL REFERENCES researchers(id) ON DELETE CASCADE,
+    submission_title VARCHAR(255) NOT NULL,
+    submission_type VARCHAR(50) NOT NULL DEFAULT 'RESEARCH_RECORD', -- 'RESEARCH_RECORD' | 'SITE_ASSESSMENT' | 'PEER_EVALUATION'
+    status VARCHAR(50) NOT NULL DEFAULT 'SUBMITTED', -- 'DRAFT' | 'SUBMITTED' | 'UNDER_REVIEW' | 'REVISION_REQUESTED' | 'APPROVED' | 'PUBLISHED'
+    reviewer_id VARCHAR(64) REFERENCES researchers(id) ON DELETE SET NULL,
+    reviewer_name VARCHAR(255),
+    reviewer_notes TEXT,
+    revision_requested_reason TEXT,
+    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    reviewed_at TIMESTAMP WITH TIME ZONE,
+    published_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_research_submissions_status ON research_submissions(status);
+CREATE INDEX IF NOT EXISTS idx_research_submissions_researcher ON research_submissions(researcher_id);
+
+-- 10. Review History Table (Audit Trail)
+CREATE TABLE IF NOT EXISTS review_history (
+    id SERIAL PRIMARY KEY,
+    submission_id VARCHAR(64) NOT NULL REFERENCES research_submissions(id) ON DELETE CASCADE,
+    actor_id VARCHAR(64) REFERENCES researchers(id) ON DELETE SET NULL,
+    actor_name VARCHAR(255) NOT NULL,
+    from_status VARCHAR(50),
+    to_status VARCHAR(50) NOT NULL,
+    comment TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_review_history_submission ON review_history(submission_id);

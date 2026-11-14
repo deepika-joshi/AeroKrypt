@@ -11,16 +11,22 @@ import logging
 
 logger = logging.getLogger("aerokrypt.gis_processor")
 
-# Safe imports for environment without system GDAL installed
+# Native GIS binary imports (Rasterio + GeoPandas with embedded GDAL engine)
 try:
     import rasterio
     from rasterio.transform import rowcol
     import geopandas as gpd
     from shapely.geometry import Point, box
-    from osgeo import gdal
+    RASTERIO_AVAILABLE = True
     GDAL_AVAILABLE = True
+    try:
+        from osgeo import gdal
+    except ImportError:
+        gdal = None
+    logger.info("GIS processing engine loaded: Rasterio %s (GDAL %s), GeoPandas %s", rasterio.__version__, rasterio.__gdal_version__, gpd.__version__)
 except ImportError as err:
-    logger.warning("GDAL / Rasterio / GeoPandas native binaries not loaded: %s. Using geodetic fallback models.", err)
+    logger.warning("Rasterio / GeoPandas native binaries not loaded: %s. Using geodetic fallback models.", err)
+    RASTERIO_AVAILABLE = False
     GDAL_AVAILABLE = False
 
 

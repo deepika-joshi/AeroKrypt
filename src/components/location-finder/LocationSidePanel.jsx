@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LOCATION_PHOTOGRAPHS } from '../../data/locationPhotos.js'
 import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
+import { locationsApi } from '../../services/apiClient.js'
 
 export default function LocationSidePanel({
   location,
@@ -10,8 +11,26 @@ export default function LocationSidePanel({
   const [showComparison, setShowComparison] = useState(false)
   const [selectedPlanetTargetId, setSelectedPlanetTargetId] = useState('')
   const [imgError, setImgError] = useState(false)
+  const [backendDetail, setBackendDetail] = useState(null)
+
+  // Fetch full detail profile from FastAPI backend on selection
+  useEffect(() => {
+    if (!location?.id) return
+    let isMounted = true
+    locationsApi.getLocationById(location.id)
+      .then((res) => {
+        if (!isMounted) return
+        if (res.success && res.data) {
+          setBackendDetail(res.data)
+        }
+      })
+      .catch(() => {})
+    return () => { isMounted = false }
+  }, [location?.id])
 
   if (!location) return null
+
+  const isBackendLoaded = Boolean(backendDetail && backendDetail.id === location.id)
 
   const photoInfo = LOCATION_PHOTOGRAPHS[location.id] || null
 
@@ -178,6 +197,22 @@ export default function LocationSidePanel({
             >
               {location.verificationStatus}
             </span>
+            {isBackendLoaded && (
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: '10px',
+                  padding: '2px 6px',
+                  borderRadius: '2px',
+                  fontWeight: 600,
+                  backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                  color: '#38bdf8',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                }}
+              >
+                REST DETAILED
+              </span>
+            )}
           </div>
 
           <button

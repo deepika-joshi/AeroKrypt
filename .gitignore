@@ -31,3 +31,8 @@ node_modules/
 dist/
 .venv/
 venv/
+
+# Local databases and generated data
+*.db
+aerokrypt.db
+raster_cache/

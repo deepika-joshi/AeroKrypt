@@ -1,6 +1,6 @@
 /**
  * AEROKRYPT - Canonical Navigation Structure
- * 
+ *
  * Defines the 5 primary platform sections:
  * 1. Dashboard
  * 2. Location Explore
@@ -24,7 +24,7 @@ export const NAVIGATION_SECTIONS = [
   },
   {
     id: 'site-evaluation',
-    label: 'Site Evaluation',
+    label: 'Analogue Site Assessment',
     section: 'Scientific Assessment',
     description: 'Unified planetary terrain comparison (Mars MOLA & Moon LOLA) and multi-factor analogue evaluation',
   },

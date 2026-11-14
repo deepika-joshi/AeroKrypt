@@ -74,9 +74,9 @@ export default function MissionRequirementBuilder({
           </label>
           <div className="planetary-toggle-group" id="category-toggle-select">
             {[
-              { id: 'ALL', label: 'All Sites (20)' },
-              { id: 'NATURAL_SITE', label: 'Natural Sites (16)' },
-              { id: 'RESEARCH_FACILITY', label: 'Research Facilities (4)' },
+              { id: 'ALL', label: 'All Sites' },
+              { id: 'NATURAL_SITE', label: 'Natural Field Sites' },
+              { id: 'RESEARCH_FACILITY', label: 'Research Facilities' },
             ].map((cat) => (
               <button
                 key={cat.id}

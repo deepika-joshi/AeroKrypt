@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect, useRef } from 'react'
 import { ANALOGUE_LOCATIONS } from '../../data/locationsData.js'
 import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
 import { matchLocations } from '../../services/locationMatcher.js'
-import { getAllLocations } from '../../services/locationRegistryService.js'
+import { getAllLocations, getStoredCustomLocations, getLocationCoordinates } from '../../services/locationRegistryService.js'
+import { locationsApi } from '../../services/apiClient.js'
 import MissionRequirementBuilder from './MissionRequirementBuilder.jsx'
 import CandidateMatchCard from './CandidateMatchCard.jsx'
 import ComparisonMatrix from './ComparisonMatrix.jsx'
@@ -47,8 +48,40 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
   const [showFullInspectorModal, setShowFullInspectorModal] = useState(false)
   const [showAdvancedCriteria, setShowAdvancedCriteria] = useState(false)
   const [prevPrefocusedId, setPrevPrefocusedId] = useState(prefocusedLocationId)
+  const [backendSyncStatus, setBackendSyncStatus] = useState('LOCAL_CACHE') // 'LIVE_API' | 'LOCAL_CACHE'
 
   const mapSectionRef = useRef(null)
+
+  // Asynchronously synchronize curated and database locations from FastAPI backend
+  useEffect(() => {
+    let isMounted = true
+    async function loadBackendLocations() {
+      try {
+        const res = await locationsApi.getLocations()
+        if (!isMounted) return
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const customLocations = getStoredCustomLocations()
+          const enhanced = res.data.map((loc) => {
+            const coords = getLocationCoordinates(loc)
+            return {
+              ...loc,
+              latitude: typeof loc.latitude === 'number' ? loc.latitude : coords.lat,
+              longitude: typeof loc.longitude === 'number' ? loc.longitude : coords.lng,
+              isCustom: false,
+            }
+          })
+          setLocationsList([...enhanced, ...customLocations])
+          setBackendSyncStatus('LIVE_API')
+        } else {
+          setBackendSyncStatus('LOCAL_CACHE')
+        }
+      } catch {
+        if (isMounted) setBackendSyncStatus('LOCAL_CACHE')
+      }
+    }
+    loadBackendLocations()
+    return () => { isMounted = false }
+  }, [])
 
   // Compare mode selections
   const [comparePlanetId, setComparePlanetId] = useState('mars-jezero-delta')
@@ -72,7 +105,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
     }
   }, [prefocusedLocationId])
 
-  // Compute counts for each primary filter tab based on the full 20 locations
+  // Compute counts for each primary filter tab dynamically based on current locations list
   const filterCounts = useMemo(() => {
     return {
       ALL: locationsList.length,
@@ -243,6 +276,20 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   ? `${mapLocations.length} / ${locationsList.length} Earth Sites Active`
                   : `${PLANETARY_TERRAIN_DATASETS.filter((d) => d.targetBody.toLowerCase() === mapBodyMode).length} Planetary Targets`}
               </span>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: '10px',
+                  padding: '2px 8px',
+                  borderRadius: '2px',
+                  backgroundColor: backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.15)' : 'rgba(56, 189, 248, 0.12)',
+                  color: backendSyncStatus === 'LIVE_API' ? '#4ade80' : '#38bdf8',
+                  border: `1px solid ${backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.4)' : 'rgba(56, 189, 248, 0.3)'}`,
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {backendSyncStatus === 'LIVE_API' ? '⚡ FASTAPI POSTGIS' : '💾 LOCAL GEODETIC CACHE'}
+              </span>
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '4px 0 0 0' }}>
               {viewMode === 'globe' && 'Earth Terrestrial Analogue Geodesy &bull; 3D Planetary Globe'}
@@ -250,7 +297,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               {viewMode === 'map' && mapBodyMode === 'mars' && 'Mars Global Topography (MOLA Altimetry)'}
               {viewMode === 'map' && mapBodyMode === 'moon' && 'Moon Lunar Surface & Pyroduct Skylights (LRO WAC)'}
               {viewMode === 'map' && mapBodyMode === 'compare' && 'Planetary vs Earth Terrestrial Comparison'}
-              {viewMode === 'catalog' && 'Audited Earth Analogue Candidate Catalog'}
+              {viewMode === 'catalog' && 'Curated Earth Analogue Candidate Catalog'}
             </h3>
             <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
               {viewMode === 'globe'
@@ -819,7 +866,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               <span className="aerospace-label-accent">//</span> EVALUATED CANDIDATE CATALOG
             </div>
             <h2 className="results-heading" style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '2px' }}>
-              Audited Earth Locations ({evaluatedMatches.length} Sites)
+              Curated Earth Analogue Locations
             </h2>
             <p className="results-subheading" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
               Showing {primaryFilter === 'ALL' ? 'all' : primaryFilter.toLowerCase()} analogue sites. Synchronized with top interactive map and telemetry profile.

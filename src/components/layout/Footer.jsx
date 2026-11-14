@@ -15,9 +15,7 @@ export default function Footer({ onNavigate }) {
           <div className="footer-col-brand">
             <div className="footer-brand-title">AEROKRYPT</div>
             <p className="footer-tagline">
-              Planetary Analogue Research &amp; Comparative Site Evaluation Architecture.
-              Validating off-world surface operations through audited terrestrial geodesy,
-              in-situ mineralogy, and NASA/ESA orbital topography.
+              Evaluate Earth sites for Mars and Moon research using real terrain data, geological evidence and documented field studies.
             </p>
             <div className="footer-telemetry font-mono">
               <span className="telemetry-dot" />
@@ -41,7 +39,7 @@ export default function Footer({ onNavigate }) {
               </li>
               <li>
                 <button type="button" onClick={() => handleNavClick('site-evaluation')} className="footer-link">
-                  Site Evaluation &amp; Comparison
+                  Analogue Site Assessment
                 </button>
               </li>
               <li>

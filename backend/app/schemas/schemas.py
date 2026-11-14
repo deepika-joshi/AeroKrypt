@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 from datetime import datetime
 
@@ -23,6 +23,7 @@ class BoundingBox(BaseModel):
     official_boundary_evidence_available: bool = False
 
 class AnalogueLocationSummary(BaseModel):
+    model_config = ConfigDict(extra="allow")
     id: str
     name: str
     country: str
@@ -36,6 +37,7 @@ class AnalogueLocationSummary(BaseModel):
     geodetic_datum: str = "WGS 84 / EGM96 Geoid"
 
 class AnalogueLocationDetail(AnalogueLocationSummary):
+    model_config = ConfigDict(extra="allow")
     bounding_box: Optional[BoundingBox] = None
     parameters: List[ParameterResponse] = []
     lithology: List[str] = []
@@ -64,8 +66,14 @@ class SiteEvaluationRequest(BaseModel):
     planetary_terrain_id: str
     experiment_id: Optional[str] = None
     evaluator_name: Optional[str] = "Principal Investigator"
+    project_id: Optional[str] = None
+    save_to_project: Optional[bool] = False
 
 class DualSuitabilityAssessment(BaseModel):
+    evaluation_id: Optional[str] = None
+    project_id: Optional[str] = None
+    evaluation_version: Optional[str] = "AEROKRYPT_SITE_EVAL_V2"
+    created_at: Optional[str] = None
     geological_fidelity: Dict[str, Any]
     operational_suitability: Dict[str, Any]
     missing_critical_parameters: List[str]

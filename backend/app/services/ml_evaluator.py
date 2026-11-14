@@ -24,9 +24,9 @@ except ImportError as err:
 if ML_AVAILABLE:
     class TerrainSuitabilityNet(nn.Module):
         """
-        PyTorch Feed-Forward Neural Network for Multi-Factor Operational Feasibility.
-        Inputs: [slope_deg, elevation_m, temp_c, precip_mm, uv_index, target_body_encoded]
-        Outputs: [mobility_risk, drill_feasibility, thermal_stress]
+        Physics-Informed PyTorch Feed-Forward Neural Network for Multi-Factor Operational Feasibility.
+        Inputs: [slope, elevation, temp, precip, uv, target_body_encoded]
+        Outputs: [mobility_hazard, drill_feasibility, environmental_stress]
         """
         def __init__(self, input_dim: int = 6, hidden_dim: int = 32, output_dim: int = 3):
             super().__init__()
@@ -37,10 +37,19 @@ if ML_AVAILABLE:
             self.sigmoid = nn.Sigmoid()
 
         def forward(self, x):
-            x = self.relu(self.fc1(x))
-            x = self.relu(self.fc2(x))
-            x = self.sigmoid(self.fc3(x))
-            return x
+            h = self.relu(self.fc1(x))
+            h = self.relu(self.fc2(h))
+            out = self.sigmoid(self.fc3(h))
+
+            # Combine latent representations with physical constraints
+            slope_norm = torch.clamp(x[:, 0:1], 0.0, 1.0)
+            temp_stress = torch.clamp(torch.abs(x[:, 2:3]), 0.0, 1.0)
+
+            mobility_hazard = torch.clamp(0.4 * out[:, 0:1] + 0.6 * slope_norm, 0.0, 1.0)
+            subsurface_access = torch.clamp(0.5 * out[:, 1:2] + 0.5 * (1.0 - slope_norm * 0.5), 0.0, 1.0)
+            env_stress = torch.clamp(0.4 * out[:, 2:3] + 0.6 * temp_stress, 0.0, 1.0)
+
+            return torch.cat([mobility_hazard, subsurface_access, env_stress], dim=1)
 
 
 class AnalogueMLEvaluator:
@@ -60,7 +69,7 @@ class AnalogueMLEvaluator:
         else:
             self.torch_model = None
 
-    def predict_operational_hazards(self, features: Dict[str, float]) -> Dict[str, Any]:
+    def predict_operational_hazards(self, features: Dict[str, Any]) -> Dict[str, Any]:
         """
         Runs neural inference across operational parameters to assess mobility and thermal constraints.
         """
@@ -74,14 +83,22 @@ class AnalogueMLEvaluator:
             }
 
         try:
-            # Vector: [slope, elevation, temp, precip, uv, body_mars]
+            # Extract features with flexible alias support
+            slope = float(features.get("slope") if features.get("slope") is not None else (features.get("slope_deg") if features.get("slope_deg") is not None else 5.0))
+            elevation = float(features.get("elevation") if features.get("elevation") is not None else (features.get("elevation_m") if features.get("elevation_m") is not None else 1000.0))
+            temp = float(features.get("temp") if features.get("temp") is not None else (features.get("temperature_c") if features.get("temperature_c") is not None else 15.0))
+            precip = float(features.get("precip") if features.get("precip") is not None else (features.get("precipitation_mm") if features.get("precipitation_mm") is not None else 50.0))
+            uv = float(features.get("uv") if features.get("uv") is not None else (features.get("uv_index") if features.get("uv_index") is not None else 8.0))
+            target = features.get("target_body") or features.get("target") or "Mars"
+
+            # Normalized vector: [slope/45.0, elevation/5000.0, temp/50.0, precip/500.0, uv/15.0, body_mars]
             inp = torch.tensor([[
-                features.get("slope", 5.0),
-                features.get("elevation", 1000.0) / 1000.0,
-                features.get("temp", 15.0),
-                features.get("precip", 50.0) / 100.0,
-                features.get("uv", 8.0) / 15.0,
-                1.0 if features.get("target_body") == "Mars" else 0.0
+                slope / 45.0,
+                elevation / 5000.0,
+                temp / 50.0,
+                precip / 500.0,
+                uv / 15.0,
+                1.0 if str(target).lower() == "mars" else 0.0
             ]], dtype=torch.float32)
 
             with torch.no_grad():

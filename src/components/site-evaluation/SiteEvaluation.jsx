@@ -1,7 +1,8 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ANALOGUE_LOCATIONS } from '../../data/locationsData.js'
 import { MISSION_OBJECTIVES } from '../../data/missionObjectives.js'
 import { evaluateSite } from '../../services/siteAssessment.js'
+import { evaluationsApi } from '../../services/apiClient.js'
 import SiteProfileHeader from './SiteProfileHeader.jsx'
 import DualSuitabilityPanel from './DualSuitabilityPanel.jsx'
 import EnvironmentalParameterGrid from './EnvironmentalParameterGrid.jsx'
@@ -37,6 +38,8 @@ export default function SiteEvaluation({
   }
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('ALL')
+  const [backendAssessment, setBackendAssessment] = useState(null)
+  const [backendEngineStatus, setBackendEngineStatus] = useState('LOCAL_ENGINE') // 'API_ENGINE' | 'LOCAL_ENGINE'
 
   // Find active location
   const activeLocation = useMemo(() => {
@@ -50,6 +53,34 @@ export default function SiteEvaluation({
   const evaluationData = useMemo(() => {
     return evaluateSite(activeLocation, selectedExperimentId || null)
   }, [activeLocation, selectedExperimentId])
+
+  // Asynchronously query FastAPI / evaluations / site-assessment endpoint
+  useEffect(() => {
+    let isMounted = true
+    async function fetchBackendAssessment() {
+      try {
+        const targetBody = activeLocation.primaryTarget === 'Moon' ? 'Moon' : 'Mars'
+        const terrainId = targetBody === 'Moon' ? 'moon-marius-hills-skylight' : 'mars-jezero-delta'
+        const res = await evaluationsApi.getSiteAssessment({
+          location_id: activeLocation.id,
+          target_body: targetBody,
+          planetary_terrain_id: terrainId,
+          experiment_id: selectedExperimentId || null,
+        })
+        if (!isMounted) return
+        if (res.success && res.data) {
+          setBackendAssessment(res.data)
+          setBackendEngineStatus('API_ENGINE')
+        } else {
+          setBackendEngineStatus('LOCAL_ENGINE')
+        }
+      } catch {
+        if (isMounted) setBackendEngineStatus('LOCAL_ENGINE')
+      }
+    }
+    fetchBackendAssessment()
+    return () => { isMounted = false }
+  }, [activeLocation.id, activeLocation.primaryTarget, selectedExperimentId])
 
   const {
     location,
@@ -65,6 +96,23 @@ export default function SiteEvaluation({
 
   return (
     <div className="site-evaluation-container" id="site-evaluation-module">
+      {/* 1. Module Main Heading & Telemetry Bar */}
+      <div className="section-header-row" style={{ marginBottom: '16px' }}>
+        <div>
+          <div className="aerospace-label">
+            <span className="aerospace-label-accent">//</span> SCIENTIFIC GEODESY &amp; ANALOGUE FIDELITY
+          </div>
+          <h2 className="section-heading">Analogue Site Assessment</h2>
+          <p className="section-subheading">
+            Dual-vector evaluation of terrestrial analogue fidelity and operational mission suitability against Mars and Lunar orbital baselines.
+          </p>
+        </div>
+        <div className="dataset-notice-chip font-mono">
+          <span className="notice-dot" />
+          <span>DUAL-VECTOR GEOLOGICAL &amp; OPERATIONAL ASSESSMENT</span>
+        </div>
+      </div>
+
       {/* Top Scientific Control Panel */}
       <section className="evaluation-controls-bar">
         <div className="controls-form-grid">
@@ -108,23 +156,40 @@ export default function SiteEvaluation({
           </div>
 
           {/* Quick Actions */}
-          <div className="control-actions">
-            <button
-              type="button"
-              className="btn-export-dossier font-mono"
-              onClick={() => setIsReportModalOpen(true)}
-            >
-              &#128196; Export / Print Dossier
-            </button>
-            {onNavigate && (
+          <div className="control-actions" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <button
                 type="button"
-                className="btn-nav-finder font-mono"
-                onClick={() => onNavigate('location-explorer', { locationId: location.id })}
+                className="btn-export-dossier font-mono"
+                onClick={() => setIsReportModalOpen(true)}
               >
-                &larr; Cross-Reference in Location Finder
+                &#128196; Export / Print Dossier
               </button>
-            )}
+              {onNavigate && (
+                <button
+                  type="button"
+                  className="btn-nav-finder font-mono"
+                  onClick={() => onNavigate('location-explorer', { locationId: location.id })}
+                >
+                  &larr; Cross-Reference in Location Finder
+                </button>
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: '10px',
+                  padding: '2px 6px',
+                  borderRadius: '2px',
+                  backgroundColor: backendEngineStatus === 'API_ENGINE' ? 'rgba(74, 222, 128, 0.15)' : 'rgba(56, 189, 248, 0.12)',
+                  color: backendEngineStatus === 'API_ENGINE' ? '#4ade80' : '#38bdf8',
+                  border: `1px solid ${backendEngineStatus === 'API_ENGINE' ? 'rgba(74, 222, 128, 0.4)' : 'rgba(56, 189, 248, 0.3)'}`,
+                }}
+              >
+                {backendEngineStatus === 'API_ENGINE' ? '⚡ FASTAPI ASSESSMENT: LIVE' : '💾 DETERMINISTIC ENGINE: LOCAL'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -234,6 +299,7 @@ export default function SiteEvaluation({
             geologicalSimilarity={geologicalSimilarity}
             operationalSuitability={operationalSuitability}
             experiment={experiment}
+            backendAssessment={backendAssessment}
           />
         )}
 
