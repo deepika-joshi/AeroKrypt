@@ -4,7 +4,6 @@ import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
 import { matchLocations } from '../../services/locationMatcher.js'
 import { getAllLocations, getStoredCustomLocations, getLocationCoordinates } from '../../services/locationRegistryService.js'
 import { locationsApi } from '../../services/apiClient.js'
-import useScrollReveal from '../../hooks/useScrollReveal.js'
 import MissionRequirementBuilder from './MissionRequirementBuilder.jsx'
 import CandidateMatchCard from './CandidateMatchCard.jsx'
 import ComparisonMatrix from './ComparisonMatrix.jsx'
@@ -52,7 +51,6 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
   const [backendSyncStatus, setBackendSyncStatus] = useState('LOCAL_CACHE') // 'LIVE_API' | 'LOCAL_CACHE'
 
   const mapSectionRef = useRef(null)
-  useScrollReveal()
 
   // Asynchronously synchronize curated and database locations from FastAPI backend
   useEffect(() => {
@@ -240,50 +238,38 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
   return (
     <div className="location-finder-container" ref={mapSectionRef}>
       {/* =========================================================================
-          1. DARK, SPACE-INSPIRED LEAFLET WORLD MAP / 3D GLOBE SECTION
+          1. DARK, SPACE-INSPIRED LEAFLET WORLD MAP (AT THE TOP OF THE PAGE)
           ========================================================================= */}
       <section
-        className="location-map-section aerospace-card reveal-on-scroll"
+        className="location-map-section aerospace-card"
         style={{
           marginTop: '0px',
-          marginBottom: '28px',
+          marginBottom: '24px',
           overflow: 'hidden',
-          backgroundColor: 'rgba(16, 12, 11, 0.97)',
-          border: '1px solid rgba(214, 166, 107, 0.18)',
-          borderRadius: '6px',
-          boxShadow: '0 16px 48px rgba(0, 0, 0, 0.75)',
+          backgroundColor: 'rgba(5, 6, 8, 0.94)',
+          border: '1px solid var(--border-default)',
         }}
         aria-label="Interactive Maps and Planetary Data Explorer"
       >
         {/* Top Header & Telemetry Bar */}
         <div
           style={{
-            padding: '18px 24px',
-            borderBottom: '1px solid rgba(214, 166, 107, 0.16)',
+            padding: '16px 20px',
+            borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: '16px',
-            backgroundColor: 'rgba(24, 19, 17, 0.9)',
+            backgroundColor: 'rgba(10, 15, 25, 0.8)',
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <span className="font-mono" style={{ fontSize: '11px', color: 'var(--champagne-gold, #D6A66B)', letterSpacing: '0.14em', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span className="font-mono" style={{ fontSize: '11px', color: 'var(--accent-cyan)', letterSpacing: '0.12em' }}>
                 // GEODETIC &amp; TOPOGRAPHIC EXPLORER
               </span>
-              <span
-                className="badge-source font-mono"
-                style={{
-                  fontSize: '10px',
-                  padding: '2px 8px',
-                  borderRadius: '2px',
-                  backgroundColor: 'rgba(214, 166, 107, 0.12)',
-                  color: 'var(--warm-ivory, #F2E5D5)',
-                  border: '1px solid rgba(214, 166, 107, 0.28)',
-                }}
-              >
+              <span className="badge-source font-mono">
                 {viewMode === 'globe'
                   ? `${mapLocations.length} / ${locationsList.length} 3D Globe Sites Active`
                   : mapBodyMode === 'earth'
@@ -296,16 +282,16 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   fontSize: '10px',
                   padding: '2px 8px',
                   borderRadius: '2px',
-                  backgroundColor: backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.14)' : 'rgba(214, 166, 107, 0.12)',
-                  color: backendSyncStatus === 'LIVE_API' ? '#4ade80' : 'var(--champagne-gold, #D6A66B)',
-                  border: `1px solid ${backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.35)' : 'rgba(214, 166, 107, 0.3)'}`,
+                  backgroundColor: backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.15)' : 'rgba(56, 189, 248, 0.12)',
+                  color: backendSyncStatus === 'LIVE_API' ? '#4ade80' : '#38bdf8',
+                  border: `1px solid ${backendSyncStatus === 'LIVE_API' ? 'rgba(74, 222, 128, 0.4)' : 'rgba(56, 189, 248, 0.3)'}`,
                   letterSpacing: '0.05em',
                 }}
               >
                 {backendSyncStatus === 'LIVE_API' ? '⚡ FASTAPI POSTGIS' : '💾 LOCAL GEODETIC CACHE'}
               </span>
             </div>
-            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--warm-ivory, #F2E5D5)', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '6px 0 2px 0' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.06em', margin: '4px 0 0 0' }}>
               {viewMode === 'globe' && 'Earth Terrestrial Analogue Geodesy &bull; 3D Planetary Globe'}
               {viewMode === 'map' && mapBodyMode === 'earth' && 'Earth Terrestrial Analogue Geodesy'}
               {viewMode === 'map' && mapBodyMode === 'mars' && 'Mars Global Topography (MOLA Altimetry)'}
@@ -313,7 +299,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               {viewMode === 'map' && mapBodyMode === 'compare' && 'Planetary vs Earth Terrestrial Comparison'}
               {viewMode === 'catalog' && 'Curated Earth Analogue Candidate Catalog'}
             </h3>
-            <p style={{ fontSize: '12.5px', color: '#B8ADA3', margin: '2px 0 0 0' }}>
+            <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>
               {viewMode === 'globe'
                 ? 'Interactive 3D Earth Globe: rotate, zoom, and select analogue markers to inspect in-situ telemetry and off-world relevance.'
                 : 'Click any location marker to inspect verified photographs, lithology, environmental parameters, and off-world terrain comparisons.'}
@@ -322,7 +308,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             {/* Primary Visualization Mode Switcher: 3D Globe vs 2D Map vs List */}
-            <div className="font-mono" style={{ display: 'flex', gap: '4px', background: 'rgba(10, 8, 7, 0.85)', padding: '3px', borderRadius: '4px', border: '1px solid rgba(214, 166, 107, 0.22)' }}>
+            <div className="font-mono" style={{ display: 'flex', gap: '4px', background: 'var(--bg-void)', padding: '3px', borderRadius: '2px', border: '1px solid var(--border-subtle)' }}>
               <button
                 type="button"
                 onClick={() => {
@@ -330,16 +316,15 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   setShowMap(true)
                 }}
                 style={{
-                  background: viewMode === 'globe' ? 'rgba(214, 166, 107, 0.22)' : 'none',
-                  color: viewMode === 'globe' ? 'var(--warm-ivory, #F2E5D5)' : '#9E9287',
-                  border: viewMode === 'globe' ? '1px solid rgba(214, 166, 107, 0.5)' : '1px solid transparent',
-                  padding: '5px 12px',
-                  borderRadius: '3px',
+                  background: viewMode === 'globe' ? 'rgba(0, 210, 255, 0.2)' : 'none',
+                  color: viewMode === 'globe' ? '#00d2ff' : 'var(--text-muted)',
+                  border: 'none',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
                   fontSize: '11px',
                   fontWeight: 600,
                   cursor: 'pointer',
                   textTransform: 'uppercase',
-                  boxShadow: viewMode === 'globe' ? '0 0 10px rgba(214, 166, 107, 0.2)' : 'none',
                 }}
               >
                 🌐 3D Globe
@@ -351,16 +336,15 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   setShowMap(true)
                 }}
                 style={{
-                  background: viewMode === 'map' ? 'rgba(214, 166, 107, 0.22)' : 'none',
-                  color: viewMode === 'map' ? 'var(--warm-ivory, #F2E5D5)' : '#9E9287',
-                  border: viewMode === 'map' ? '1px solid rgba(214, 166, 107, 0.5)' : '1px solid transparent',
-                  padding: '5px 12px',
-                  borderRadius: '3px',
+                  background: viewMode === 'map' ? 'rgba(0, 210, 255, 0.2)' : 'none',
+                  color: viewMode === 'map' ? '#00d2ff' : 'var(--text-muted)',
+                  border: 'none',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
                   fontSize: '11px',
                   fontWeight: 600,
                   cursor: 'pointer',
                   textTransform: 'uppercase',
-                  boxShadow: viewMode === 'map' ? '0 0 10px rgba(214, 166, 107, 0.2)' : 'none',
                 }}
               >
                 🗺️ 2D Map
@@ -373,16 +357,15 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   if (dirEl) dirEl.scrollIntoView({ behavior: 'smooth' })
                 }}
                 style={{
-                  background: viewMode === 'catalog' ? 'rgba(214, 166, 107, 0.22)' : 'none',
-                  color: viewMode === 'catalog' ? 'var(--warm-ivory, #F2E5D5)' : '#9E9287',
-                  border: viewMode === 'catalog' ? '1px solid rgba(214, 166, 107, 0.5)' : '1px solid transparent',
-                  padding: '5px 12px',
-                  borderRadius: '3px',
+                  background: viewMode === 'catalog' ? 'rgba(0, 210, 255, 0.2)' : 'none',
+                  color: viewMode === 'catalog' ? '#00d2ff' : 'var(--text-muted)',
+                  border: 'none',
+                  padding: '4px 10px',
+                  borderRadius: '2px',
                   fontSize: '11px',
                   fontWeight: 600,
                   cursor: 'pointer',
                   textTransform: 'uppercase',
-                  boxShadow: viewMode === 'catalog' ? '0 0 10px rgba(214, 166, 107, 0.2)' : 'none',
                 }}
               >
                 📋 List View
@@ -391,15 +374,15 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
 
             {/* 2D Map Celestial Body Selector (Only when in 2D Map mode) */}
             {viewMode === 'map' && (
-              <div className="font-mono" style={{ display: 'flex', gap: '4px', background: 'rgba(10, 8, 7, 0.85)', padding: '3px', borderRadius: '4px', border: '1px solid rgba(214, 166, 107, 0.22)' }}>
+              <div className="font-mono" style={{ display: 'flex', gap: '4px', background: 'var(--bg-void)', padding: '3px', borderRadius: '2px', border: '1px solid var(--border-subtle)' }}>
                 <button
                   type="button"
                   onClick={() => setMapBodyMode('earth')}
                   style={{
-                    background: mapBodyMode === 'earth' ? 'rgba(174, 186, 200, 0.25)' : 'none',
-                    color: mapBodyMode === 'earth' ? 'var(--warm-ivory, #F2E5D5)' : '#9E9287',
+                    background: mapBodyMode === 'earth' ? 'rgba(0, 210, 255, 0.2)' : 'none',
+                    color: mapBodyMode === 'earth' ? '#00d2ff' : 'var(--text-muted)',
                     border: 'none',
-                    padding: '4px 10px',
+                    padding: '4px 8px',
                     borderRadius: '2px',
                     fontSize: '11px',
                     fontWeight: 600,
@@ -413,10 +396,10 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   type="button"
                   onClick={() => setMapBodyMode('mars')}
                   style={{
-                    background: mapBodyMode === 'mars' ? 'rgba(169, 76, 52, 0.25)' : 'none',
-                    color: mapBodyMode === 'mars' ? 'var(--terracotta, #A94C34)' : '#9E9287',
+                    background: mapBodyMode === 'mars' ? 'rgba(249, 115, 22, 0.2)' : 'none',
+                    color: mapBodyMode === 'mars' ? '#f97316' : 'var(--text-muted)',
                     border: 'none',
-                    padding: '4px 10px',
+                    padding: '4px 8px',
                     borderRadius: '2px',
                     fontSize: '11px',
                     fontWeight: 600,
@@ -430,10 +413,10 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   type="button"
                   onClick={() => setMapBodyMode('moon')}
                   style={{
-                    background: mapBodyMode === 'moon' ? 'rgba(174, 186, 200, 0.25)' : 'none',
-                    color: mapBodyMode === 'moon' ? 'var(--lunar-silver, #AEBAC8)' : '#9E9287',
+                    background: mapBodyMode === 'moon' ? 'rgba(203, 213, 225, 0.2)' : 'none',
+                    color: mapBodyMode === 'moon' ? '#cbd5e1' : 'var(--text-muted)',
                     border: 'none',
-                    padding: '4px 10px',
+                    padding: '4px 8px',
                     borderRadius: '2px',
                     fontSize: '11px',
                     fontWeight: 600,
@@ -447,10 +430,10 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   type="button"
                   onClick={() => setMapBodyMode('compare')}
                   style={{
-                    background: mapBodyMode === 'compare' ? 'rgba(214, 166, 107, 0.25)' : 'none',
-                    color: mapBodyMode === 'compare' ? 'var(--champagne-gold, #D6A66B)' : '#9E9287',
+                    background: mapBodyMode === 'compare' ? 'rgba(234, 179, 8, 0.2)' : 'none',
+                    color: mapBodyMode === 'compare' ? '#eab308' : 'var(--text-muted)',
                     border: 'none',
-                    padding: '4px 10px',
+                    padding: '4px 8px',
                     borderRadius: '2px',
                     fontSize: '11px',
                     fontWeight: 600,
@@ -469,13 +452,11 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               onClick={() => setIsAddModalOpen(true)}
               className="btn-aerospace font-mono"
               style={{
-                padding: '6px 14px',
+                padding: '5px 12px',
                 fontSize: '11px',
-                borderColor: 'rgba(214, 166, 107, 0.45)',
-                color: 'var(--warm-ivory, #F2E5D5)',
-                backgroundColor: 'rgba(214, 166, 107, 0.12)',
-                borderRadius: '3px',
-                cursor: 'pointer',
+                borderColor: 'var(--accent-cyan)',
+                color: '#ffffff',
+                backgroundColor: 'rgba(0, 210, 255, 0.1)',
               }}
             >
               + Add Site
@@ -486,11 +467,11 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               onClick={() => setShowMap(!showMap)}
               className="font-mono"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                color: '#B8ADA3',
-                padding: '6px 14px',
-                borderRadius: '3px',
+                backgroundColor: 'transparent',
+                border: '1px solid var(--border-subtle)',
+                color: 'var(--text-secondary)',
+                padding: '5px 12px',
+                borderRadius: '2px',
                 fontSize: '11px',
                 letterSpacing: '0.08em',
                 cursor: 'pointer',
@@ -508,9 +489,9 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
         <div
           className="filter-controls-strip"
           style={{
-            padding: '12px 24px',
-            backgroundColor: 'rgba(16, 12, 11, 0.98)',
-            borderBottom: '1px solid rgba(214, 166, 107, 0.14)',
+            padding: '10px 20px',
+            backgroundColor: 'rgba(5, 6, 8, 0.98)',
+            borderBottom: '1px solid var(--border-subtle)',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -519,13 +500,12 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-            <span className="font-mono" style={{ fontSize: '11px', color: '#9E9287', letterSpacing: '0.12em', marginRight: '4px', fontWeight: 600 }}>
+            <span className="font-mono" style={{ fontSize: '11px', color: 'var(--text-muted)', letterSpacing: '0.1em', marginRight: '4px' }}>
               FILTER SITES:
             </span>
             {PRIMARY_FILTER_TABS.map((tab) => {
               const isActive = primaryFilter === tab.id
               const count = filterCounts[tab.id]
-              const activeColor = tab.id === 'MARS' ? '#A94C34' : tab.id === 'MOON' ? '#AEBAC8' : tab.id === 'FACILITY' ? '#C49255' : '#D6A66B'
 
               return (
                 <button
@@ -533,22 +513,21 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   type="button"
                   onClick={() => setPrimaryFilter(tab.id)}
                   style={{
-                    background: isActive ? `${activeColor}22` : 'rgba(255, 255, 255, 0.03)',
-                    color: isActive ? '#F2E5D5' : '#B8ADA3',
+                    background: isActive ? 'rgba(0, 210, 255, 0.16)' : 'rgba(255, 255, 255, 0.04)',
+                    color: isActive ? '#00d2ff' : '#cbd5e1',
                     border: '1px solid',
-                    borderColor: isActive ? activeColor : 'rgba(255, 255, 255, 0.1)',
-                    borderRadius: '3px',
-                    padding: '7px 15px',
+                    borderColor: isActive ? '#00d2ff' : 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '2px',
+                    padding: '6px 14px',
                     fontSize: '11.5px',
                     fontWeight: isActive ? 700 : 500,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '7px',
-                    transition: 'all 0.18s ease',
+                    gap: '6px',
+                    transition: 'all 0.15s ease',
                     textTransform: 'uppercase',
                     fontFamily: 'monospace',
-                    boxShadow: isActive ? `0 0 12px ${activeColor}33` : 'none',
                   }}
                   aria-pressed={isActive}
                 >
@@ -557,11 +536,10 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   <span
                     style={{
                       fontSize: '10px',
-                      padding: '1px 6px',
+                      padding: '1px 5px',
                       borderRadius: '10px',
-                      backgroundColor: isActive ? `${activeColor}40` : 'rgba(255, 255, 255, 0.08)',
-                      color: isActive ? '#F2E5D5' : '#9E9287',
-                      fontWeight: 700,
+                      backgroundColor: isActive ? 'rgba(0, 210, 255, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                      color: isActive ? '#ffffff' : 'var(--text-muted)',
                     }}
                   >
                     {count}
@@ -571,9 +549,9 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
             })}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {isSidePanelOpen && (
-              <span className="font-mono" style={{ fontSize: '11px', color: 'var(--champagne-gold, #D6A66B)' }}>
+              <span className="font-mono" style={{ fontSize: '11px', color: '#00d2ff' }}>
                 Side Panel Active &bull; {inspectedLocation ? inspectedLocation.name.split('(')[0] : 'None'}
               </span>
             )}
@@ -588,12 +566,12 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                 }
               }}
               style={{
-                background: 'rgba(214, 166, 107, 0.08)',
-                border: '1px solid rgba(214, 166, 107, 0.3)',
-                color: 'var(--warm-ivory, #F2E5D5)',
-                padding: '6px 12px',
+                background: 'none',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: 'var(--text-secondary)',
+                padding: '4px 10px',
                 fontSize: '11px',
-                borderRadius: '3px',
+                borderRadius: '2px',
                 cursor: 'pointer',
                 textTransform: 'uppercase',
               }}
@@ -607,32 +585,24 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
         {mapBodyMode === 'compare' && (
           <div
             style={{
-              padding: '18px 24px',
-              backgroundColor: 'rgba(20, 16, 14, 0.95)',
-              borderBottom: '1px solid rgba(214, 166, 107, 0.16)',
+              padding: '16px 20px',
+              backgroundColor: 'rgba(5, 6, 8, 0.85)',
+              borderBottom: '1px solid var(--border-subtle)',
               display: 'flex',
               flexDirection: 'column',
               gap: '14px',
             }}
           >
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label className="font-mono" style={{ fontSize: '10px', color: '#9E9287', textTransform: 'uppercase' }}>
+                  <label className="font-mono" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     1. Target Planetary Body &amp; Terrain:
                   </label>
                   <select
                     value={comparePlanetId}
                     onChange={(e) => setComparePlanetId(e.target.value)}
-                    className="font-mono"
-                    style={{
-                      padding: '7px 12px',
-                      fontSize: '11.5px',
-                      backgroundColor: '#100C0B',
-                      color: '#F2E5D5',
-                      border: '1px solid rgba(214, 166, 107, 0.3)',
-                      borderRadius: '3px',
-                    }}
+                    style={{ padding: '6px 10px', fontSize: '12px' }}
                   >
                     <optgroup label="Mars Targets (MOLA Areoid)">
                       {PLANETARY_TERRAIN_DATASETS.filter((d) => d.targetBody === 'Mars').map((d) => (
@@ -648,7 +618,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label className="font-mono" style={{ fontSize: '10px', color: '#9E9287', textTransform: 'uppercase' }}>
+                  <label className="font-mono" style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     2. Terrestrial Earth Candidate:
                   </label>
                   <select
@@ -657,15 +627,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                       setCompareEarthId(e.target.value)
                       handleSelectLocation(e.target.value)
                     }}
-                    className="font-mono"
-                    style={{
-                      padding: '7px 12px',
-                      fontSize: '11.5px',
-                      backgroundColor: '#100C0B',
-                      color: '#F2E5D5',
-                      border: '1px solid rgba(214, 166, 107, 0.3)',
-                      borderRadius: '3px',
-                    }}
+                    style={{ padding: '6px 10px', fontSize: '12px' }}
                   >
                     {ANALOGUE_LOCATIONS.map((loc) => (
                       <option key={loc.id} value={loc.id}>Earth &mdash; {loc.name} ({loc.country})</option>
@@ -676,7 +638,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
 
               <button
                 type="button"
-                className="btn-aerospace font-mono"
+                className="btn-aerospace btn-aerospace-cyan"
                 onClick={() => {
                   if (onNavigate) {
                     onNavigate('site-evaluation', {
@@ -685,50 +647,41 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                     })
                   }
                 }}
-                style={{
-                  padding: '8px 16px',
-                  fontSize: '11px',
-                  background: 'linear-gradient(135deg, #D6A66B 0%, #A94C34 100%)',
-                  color: '#100C0B',
-                  fontWeight: 700,
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
+                style={{ padding: '8px 16px', fontSize: '11px' }}
               >
                 <span>OPEN FULL SITE EVALUATION</span>
-                <span> &rarr;</span>
+                <span>&rarr;</span>
               </button>
             </div>
 
             {/* Quick Side-by-Side Comparison Metric Table */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginTop: '4px' }}>
-              <div style={{ background: 'rgba(169, 76, 52, 0.08)', padding: '12px 14px', borderRadius: '3px', border: '1px solid rgba(169, 76, 52, 0.3)' }}>
-                <div className="font-mono" style={{ fontSize: '10.5px', color: 'var(--terracotta, #A94C34)', fontWeight: 700 }}>
+              <div style={{ background: 'var(--bg-void)', padding: '12px', borderRadius: '2px', border: '1px solid rgba(249, 115, 22, 0.3)' }}>
+                <div className="font-mono" style={{ fontSize: '10.5px', color: '#f97316', fontWeight: 700 }}>
                   PLANETARY TARGET: {selectedPlanetTerrain.targetBody.toUpperCase()} &bull; {selectedPlanetTerrain.name}
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '4px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
                   <strong>Coordinates:</strong> {selectedPlanetTerrain.centerCoordinates} ({selectedPlanetTerrain.datumDescription})
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                   <strong>Typical Slope:</strong> {selectedPlanetTerrain.slope?.typicalDeg}° (Max: {selectedPlanetTerrain.slope?.maxDeg}°)
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                   <strong>Relief Scale:</strong> {selectedPlanetTerrain.elevation?.localReliefM}m local relief &bull; {selectedPlanetTerrain.elevation?.label}
                 </div>
               </div>
 
-              <div style={{ background: 'rgba(214, 166, 107, 0.08)', padding: '12px 14px', borderRadius: '3px', border: '1px solid rgba(214, 166, 107, 0.3)' }}>
-                <div className="font-mono" style={{ fontSize: '10.5px', color: 'var(--champagne-gold, #D6A66B)', fontWeight: 700 }}>
+              <div style={{ background: 'var(--bg-void)', padding: '12px', borderRadius: '2px', border: '1px solid rgba(0, 210, 255, 0.3)' }}>
+                <div className="font-mono" style={{ fontSize: '10.5px', color: '#00d2ff', fontWeight: 700 }}>
                   EARTH ANALOGUE: {selectedEarthAnalogue.name}
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '4px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>
                   <strong>Coordinates:</strong> {selectedEarthAnalogue.coordinates} (WGS 84 / EGM96 Geoid)
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                   <strong>Typical Slope:</strong> {selectedEarthAnalogue.slope?.typicalDeg}° (Max: {selectedEarthAnalogue.slope?.maxDeg}°)
                 </div>
-                <div style={{ fontSize: '12px', color: '#B8ADA3', marginTop: '2px' }}>
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
                   <strong>Relief Scale:</strong> {selectedEarthAnalogue.elevation?.nominalM}m elevation &bull; {selectedEarthAnalogue.geomorphology?.primaryLandform || selectedEarthAnalogue.terrainType}
                 </div>
               </div>
@@ -793,7 +746,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                 style={{
                   maxHeight: viewMode === 'globe' ? '580px' : '540px',
                   overflowY: 'auto',
-                  borderLeft: '1px solid rgba(214, 166, 107, 0.16)',
+                  borderLeft: '1px solid var(--border-subtle)',
                 }}
               >
                 <LocationSidePanel
@@ -810,32 +763,24 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
         {showMap && viewMode === 'catalog' && (
           <div
             style={{
-              padding: '28px',
-              backgroundColor: 'rgba(20, 16, 14, 0.95)',
-              borderBottom: '1px solid rgba(214, 166, 107, 0.16)',
+              padding: '24px',
+              backgroundColor: 'rgba(5, 6, 8, 0.9)',
+              borderBottom: '1px solid var(--border-subtle)',
               textAlign: 'center',
             }}
           >
-            <div className="font-mono" style={{ fontSize: '11px', color: 'var(--champagne-gold, #D6A66B)', letterSpacing: '0.12em', marginBottom: '8px', fontWeight: 700 }}>
+            <div className="font-mono" style={{ fontSize: '11px', color: 'var(--accent-cyan)', letterSpacing: '0.1em', marginBottom: '6px' }}>
               // CATALOG DIRECTORY MODE ACTIVE
             </div>
-            <p style={{ color: '#B8ADA3', fontSize: '13.5px', margin: '0 0 16px 0' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: '0 0 14px 0' }}>
               Full candidate location directory is displayed below with multi-criteria ConOps filters and comparison tools.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
               <button
                 type="button"
-                className="btn-aerospace font-mono"
+                className="btn-aerospace btn-aerospace-cyan font-mono"
                 onClick={() => setViewMode('globe')}
-                style={{
-                  padding: '7px 16px',
-                  fontSize: '11px',
-                  background: 'linear-gradient(135deg, #D6A66B 0%, #A94C34 100%)',
-                  color: '#100C0B',
-                  fontWeight: 700,
-                  border: 'none',
-                  borderRadius: '3px',
-                }}
+                style={{ padding: '6px 14px', fontSize: '11px' }}
               >
                 🌐 Launch 3D Earth Globe
               </button>
@@ -843,14 +788,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                 type="button"
                 className="btn-aerospace font-mono"
                 onClick={() => setViewMode('map')}
-                style={{
-                  padding: '7px 16px',
-                  fontSize: '11px',
-                  background: 'rgba(214, 166, 107, 0.1)',
-                  border: '1px solid rgba(214, 166, 107, 0.3)',
-                  color: '#F2E5D5',
-                  borderRadius: '3px',
-                }}
+                style={{ padding: '6px 14px', fontSize: '11px' }}
               >
                 🗺️ Open 2D Geodetic Map
               </button>
@@ -862,26 +800,26 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
         <div
           className="font-mono"
           style={{
-            padding: '12px 24px',
-            backgroundColor: 'rgba(16, 12, 11, 0.98)',
-            borderTop: '1px solid rgba(214, 166, 107, 0.14)',
+            padding: '10px 20px',
+            backgroundColor: 'rgba(5, 6, 8, 0.95)',
+            borderTop: '1px solid var(--border-subtle)',
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between',
             alignItems: 'center',
             fontSize: '11px',
-            color: '#9E9287',
+            color: 'var(--text-muted)',
             gap: '12px',
           }}
         >
           <div>
-            <strong style={{ color: '#B8ADA3' }}>Active Geodetic Reference:</strong> {mapBodyMode === 'mars' ? 'IAU2000:49900 (MOLA Areoid 610 Pa Datum)' : mapBodyMode === 'moon' ? 'IAU2000:30100 (Mean Lunar Sphere R = 1737.4 km)' : 'WGS 84 / EGM96 Geoid'}
+            <strong>Active Geodetic Reference:</strong> {mapBodyMode === 'mars' ? 'IAU2000:49900 (MOLA Areoid 610 Pa Datum)' : mapBodyMode === 'moon' ? 'IAU2000:30100 (Mean Lunar Sphere R = 1737.4 km)' : 'WGS 84 / EGM96 Geoid'}
           </div>
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-            <span style={{ color: 'var(--champagne-gold, #D6A66B)' }}>NASA MOLA MEGDR [MAP_SERVICE]</span>
-            <span style={{ color: 'var(--lunar-silver, #AEBAC8)' }}>NASA LRO WAC [MAP_SERVICE]</span>
-            <span style={{ color: 'var(--champagne-gold, #D6A66B)' }}>USGS 3DEP [METADATA_ONLY]</span>
-            <span style={{ color: '#C49255' }}>Copernicus GLO-30 [METADATA_ONLY]</span>
+            <span style={{ color: 'var(--accent-cyan)' }}>NASA MOLA MEGDR [MAP_SERVICE]</span>
+            <span style={{ color: 'var(--accent-cyan)' }}>NASA LRO WAC [MAP_SERVICE]</span>
+            <span style={{ color: '#eab308' }}>USGS 3DEP [METADATA_ONLY]</span>
+            <span style={{ color: '#eab308' }}>Copernicus GLO-30 [METADATA_ONLY]</span>
           </div>
         </div>
       </section>
@@ -889,20 +827,20 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
       {/* =========================================================================
           3. COMPLETE WORLDWIDE LOCATION DIRECTORY (BELOW THE MAP)
           ========================================================================= */}
-      <section className="location-directory-section reveal-on-scroll" aria-label="Worldwide Location Directory">
+      <section className="location-directory-section" aria-label="Worldwide Location Directory">
         {/* Advanced Filter Collapse Toggle */}
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ marginBottom: '14px', display: 'flex', justifyContent: 'flex-end' }}>
           <button
             type="button"
             className="font-mono"
             onClick={() => setShowAdvancedCriteria(!showAdvancedCriteria)}
             style={{
-              background: 'rgba(214, 166, 107, 0.08)',
-              border: '1px solid rgba(214, 166, 107, 0.28)',
-              color: showAdvancedCriteria ? 'var(--champagne-gold, #D6A66B)' : '#B8ADA3',
-              padding: '7px 14px',
+              background: 'none',
+              border: '1px solid var(--border-subtle)',
+              color: showAdvancedCriteria ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              padding: '6px 12px',
               fontSize: '11px',
-              borderRadius: '3px',
+              borderRadius: '2px',
               cursor: 'pointer',
               textTransform: 'uppercase',
             }}
@@ -913,7 +851,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
 
         {/* Optional Collapsible Mission Requirements & Slope/Thermal Builder */}
         {showAdvancedCriteria && (
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <MissionRequirementBuilder
               criteria={criteria}
               onCriteriaChange={setCriteria}
@@ -923,71 +861,59 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
         )}
 
         {/* Results Header & Real-Time Search Bar */}
-        <div className="results-header-bar" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+        <div className="results-header-bar" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
           <div className="results-title-group">
-            <div className="aerospace-label" style={{ color: 'var(--champagne-gold, #D6A66B)', fontSize: '11px', letterSpacing: '0.12em', fontWeight: 700 }}>
+            <div className="aerospace-label">
               <span className="aerospace-label-accent">//</span> EVALUATED CANDIDATE CATALOG
             </div>
-            <h2 className="results-heading" style={{ fontSize: '22px', fontWeight: 800, color: 'var(--warm-ivory, #F2E5D5)', textTransform: 'uppercase', letterSpacing: '0.04em', marginTop: '3px' }}>
+            <h2 className="results-heading" style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '2px' }}>
               Curated Earth Analogue Locations
             </h2>
-            <p className="results-subheading" style={{ fontSize: '13px', color: '#B8ADA3', marginTop: '2px' }}>
+            <p className="results-subheading" style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
               Showing {primaryFilter === 'ALL' ? 'all' : primaryFilter.toLowerCase()} analogue sites. Synchronized with top interactive map and telemetry profile.
             </p>
           </div>
 
           {/* Text Filter Search */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ position: 'relative' }}>
-              <input
-                type="text"
-                placeholder="Search locations, minerals, features..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            <input
+              type="text"
+              placeholder="Search locations, minerals, features..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                fontSize: '12px',
+                width: '260px',
+              }}
+              aria-label="Search location directory"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
                 style={{
-                  padding: '9px 14px',
-                  fontSize: '12px',
-                  width: '280px',
-                  backgroundColor: 'rgba(16, 12, 11, 0.95)',
-                  border: '1px solid rgba(214, 166, 107, 0.3)',
-                  color: '#F2E5D5',
-                  borderRadius: '3px',
-                  fontFamily: 'monospace',
-                  outline: 'none',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  fontSize: '16px',
                 }}
-                aria-label="Search location directory"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  style={{
-                    position: 'absolute',
-                    right: 8,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    color: '#9E9287',
-                    cursor: 'pointer',
-                    fontSize: '16px',
-                  }}
-                  aria-label="Clear search"
-                >
-                  &times;
-                </button>
-              )}
-            </div>
+                aria-label="Clear search"
+              >
+                &times;
+              </button>
+            )}
           </div>
 
-          <div className="alignment-stat-pills" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <span className="stat-pill pill-high font-mono" style={{ background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.35)', padding: '4px 10px', borderRadius: '3px', fontSize: '11px' }}>
+          <div className="alignment-stat-pills">
+            <span className="stat-pill pill-high font-mono">
               <strong>{highAlignmentCount}</strong> High Alignment
             </span>
-            <span className="stat-pill pill-partial font-mono" style={{ background: 'rgba(250, 204, 21, 0.12)', color: '#facc15', border: '1px solid rgba(250, 204, 21, 0.35)', padding: '4px 10px', borderRadius: '3px', fontSize: '11px' }}>
+            <span className="stat-pill pill-partial font-mono">
               <strong>{partialAlignmentCount}</strong> Partial
             </span>
-            <span className="stat-pill pill-diverge font-mono" style={{ background: 'rgba(169, 76, 52, 0.14)', color: '#A94C34', border: '1px solid rgba(169, 76, 52, 0.35)', padding: '4px 10px', borderRadius: '3px', fontSize: '11px' }}>
+            <span className="stat-pill pill-diverge font-mono">
               <strong>{divergentCount}</strong> Divergent
             </span>
           </div>
@@ -1012,29 +938,18 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
               className="aerospace-card"
               style={{
                 gridColumn: '1 / -1',
-                padding: '48px',
+                padding: '36px',
                 textAlign: 'center',
-                backgroundColor: 'rgba(20, 16, 14, 0.95)',
-                border: '1px solid rgba(214, 166, 107, 0.2)',
-                borderRadius: '6px',
               }}
             >
-              <p style={{ color: '#B8ADA3', marginBottom: '16px', fontSize: '14px' }}>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '12px' }}>
                 No candidate locations match the active filter ({primaryFilter}) and search query "{searchQuery}".
               </p>
               <button
                 type="button"
                 onClick={handleResetCriteria}
-                className="btn-aerospace font-mono"
-                style={{
-                  padding: '7px 16px',
-                  fontSize: '11px',
-                  background: 'linear-gradient(135deg, #D6A66B 0%, #A94C34 100%)',
-                  color: '#100C0B',
-                  fontWeight: 700,
-                  border: 'none',
-                  borderRadius: '3px',
-                }}
+                className="btn-aerospace btn-aerospace-cyan"
+                style={{ padding: '6px 14px', fontSize: '11px' }}
               >
                 Reset Filters
               </button>
@@ -1049,7 +964,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
           <div className="tray-content">
             <div className="tray-info">
               <span className="tray-badge font-mono">{selectedForCompareIds.length} / 3 SELECTED</span>
-              <span className="tray-title" style={{ color: 'var(--warm-ivory, #F2E5D5)', fontWeight: 600 }}>
+              <span className="tray-title" style={{ color: '#ffffff', fontWeight: 600 }}>
                 Ready to compare candidates side-by-side
               </span>
             </div>
@@ -1073,34 +988,17 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
             <div className="tray-actions">
               <button
                 type="button"
-                className="btn-aerospace font-mono"
+                className="btn-aerospace btn-aerospace-cyan"
                 onClick={() => setIsMatrixOpen(true)}
-                style={{
-                  padding: '7px 16px',
-                  fontSize: '11px',
-                  background: 'linear-gradient(135deg, #D6A66B 0%, #A94C34 100%)',
-                  color: '#100C0B',
-                  fontWeight: 700,
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
+                style={{ padding: '6px 14px', fontSize: '11px' }}
               >
                 Open Comparison Matrix &rarr;
               </button>
               <button
                 type="button"
-                className="btn-aerospace font-mono"
+                className="btn-aerospace"
                 onClick={() => setSelectedForCompareIds([])}
-                style={{
-                  padding: '6px 12px',
-                  fontSize: '11px',
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                  color: '#B8ADA3',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
+                style={{ padding: '6px 12px', fontSize: '11px' }}
               >
                 Clear
               </button>
