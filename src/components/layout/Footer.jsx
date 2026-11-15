@@ -8,18 +8,94 @@ export default function Footer({ onNavigate, isHome = false }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // Exact minimal footer for Home page
+  // Sophisticated editorial landing footer for Home page
   if (isHome) {
     return (
-      <footer className="aerospace-minimal-footer" aria-label="AEROKRYPT Minimal Footer">
-        <div className="minimal-footer-container">
-          <div className="minimal-footer-links font-mono">
-            <span className="minimal-footer-item">Contact Us</span>
-            <span className="minimal-footer-item">Privacy Policy</span>
-            <span className="minimal-footer-item">Media</span>
+      <footer className="aerospace-landing-footer" aria-label="AEROKRYPT Landing Footer">
+        <div className="landing-footer-container">
+          <div className="landing-footer-top">
+            <div className="landing-footer-brand-col">
+              <div className="landing-footer-brand-header">
+                <span className="landing-footer-brand">AEROKRYPT</span>
+                <span className="landing-footer-tagline">Explore. Simulate. Discover.</span>
+              </div>
+              <p className="landing-footer-desc">
+                A unified planetary exploration platform for studying Mars and Moon environments,
+                evaluating Earth analogue proving grounds, and advancing scientific research.
+              </p>
+              <div className="landing-footer-telemetry font-mono">
+                <span className="telemetry-dot" />
+                <span>PLANETARY EXPLORATION CONSORTIUM // 2026</span>
+              </div>
+            </div>
+
+            <div className="landing-footer-nav-col">
+              <h4 className="landing-footer-heading font-mono">// PLATFORM NAVIGATION</h4>
+              <ul className="landing-footer-links-list">
+                <li>
+                  <Link to="/" onClick={() => handleNavClick('dashboard')} className="landing-footer-link">
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/locations" onClick={() => handleNavClick('location-explorer')} className="landing-footer-link">
+                    Location Explore
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/assessment" onClick={() => handleNavClick('site-evaluation')} className="landing-footer-link">
+                    Analogue Site Assessment
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/research" onClick={() => handleNavClick('research-hub')} className="landing-footer-link">
+                    Research Hub
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/discovery" onClick={() => handleNavClick('public-discovery')} className="landing-footer-link">
+                    Public Discovery
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div className="landing-footer-repo-col">
+              <h4 className="landing-footer-heading font-mono">// DATA REPOSITORIES</h4>
+              <ul className="landing-footer-links-list">
+                <li>
+                  <a href="https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/" target="_blank" rel="noreferrer" className="landing-footer-link">
+                    NASA Mars MOLA MEGDR
+                  </a>
+                </li>
+                <li>
+                  <a href="https://trek.nasa.gov" target="_blank" rel="noreferrer" className="landing-footer-link">
+                    NASA LRO WAC Global Mosaic
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.usgs.gov/3d-elevation-program" target="_blank" rel="noreferrer" className="landing-footer-link">
+                    USGS 3D Elevation Program
+                  </a>
+                </li>
+                <li>
+                  <a href="https://archives.esac.esa.int/psa/" target="_blank" rel="noreferrer" className="landing-footer-link">
+                    ESA Planetary Science Archive
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div className="minimal-footer-copy font-mono">
-            &copy; 2026 AEROKRYPT. All rights reserved.
+
+          <div className="landing-footer-bottom">
+            <div className="minimal-footer-links font-mono">
+              <span className="minimal-footer-item">Contact Us</span>
+              <span className="minimal-footer-item">Privacy Policy</span>
+              <span className="minimal-footer-item">Media</span>
+            </div>
+            <div className="minimal-footer-copy font-mono">
+              &copy; 2026 AEROKRYPT. All rights reserved.
+            </div>
           </div>
         </div>
       </footer>

@@ -4,49 +4,82 @@
      Design System & Aerospace Token Architecture (SpaceX-Inspired Aesthetic)
      ========================================================================== */
 
+  /* AEROKRYPT Official Premium Editorial Palette */
+  --space-black: #100C0B;
+  --deep-charcoal: #181311;
+  --charcoal-surface: #1F1917;
+  --charcoal-elevated: #28211E;
+  --charcoal-hover: #322A26;
+
+  /* Mars-specific palette */
+  --mars-burgundy: #61251E;
+  --mars-burgundy-rgb: 97, 37, 30;
+  --terracotta: #A94C34;
+  --terracotta-rgb: 169, 76, 52;
+  --mars-rust: #873420;
+  --burnt-orange: #C45E3D;
+  --copper: #B86B49;
+
+  /* Highlights and Accents */
+  --champagne-gold: #D6A66B;
+  --champagne-gold-rgb: 214, 166, 107;
+  --champagne-glow: rgba(214, 166, 107, 0.22);
+  --warm-ivory: #F2E5D5;
+  --warm-white: #FAF6F0;
+
+  /* Moon-specific palette */
+  --lunar-silver: #AEBAC8;
+  --lunar-silver-rgb: 174, 186, 200;
+  --lunar-soft-grey: #8E99A8;
+  --lunar-stone-grey: #4A5260;
+  --lunar-dark: #222731;
+
   /* Deep Space & Charcoal Background Hierarchy */
-  --bg-space: #050608;
-  --bg-void: #07080c;
-  --bg-canvas: #090a0f;
-  --bg-surface: #0d0f15;
-  --bg-surface-elevated: #12151e;
-  --bg-surface-hover: #181d28;
-  --bg-surface-active: #1e2432;
-  --bg-surface-translucent: rgba(13, 15, 21, 0.85);
-  --bg-overlay: rgba(5, 6, 8, 0.92);
+  --bg-space: #100C0B;
+  --bg-void: #140F0E;
+  --bg-canvas: #181311;
+  --bg-surface: #1F1917;
+  --bg-surface-elevated: #28211E;
+  --bg-surface-hover: #322A26;
+  --bg-surface-active: #3C332E;
+  --bg-surface-translucent: rgba(24, 19, 17, 0.88);
+  --bg-overlay: rgba(16, 12, 11, 0.94);
 
   /* Precise Aerospace 1px Borders */
-  --border-faint: rgba(255, 255, 255, 0.05);
-  --border-subtle: rgba(255, 255, 255, 0.10);
-  --border-default: rgba(255, 255, 255, 0.18);
-  --border-strong: rgba(255, 255, 255, 0.35);
-  --border-active: #ffffff;
-  --border-accent: #00d2ff;
-  --border-cyan: rgba(0, 210, 255, 0.35);
+  --border-faint: rgba(242, 229, 213, 0.05);
+  --border-subtle: rgba(242, 229, 213, 0.10);
+  --border-default: rgba(242, 229, 213, 0.18);
+  --border-strong: rgba(214, 166, 107, 0.4);
+  --border-active: #D6A66B;
+  --border-champagne: rgba(214, 166, 107, 0.35);
+  --border-terracotta: rgba(169, 76, 52, 0.35);
 
-  /* Aerospace Typography Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #a1a4ad;
-  --text-muted: #6b7280;
-  --text-disabled: #4b5563;
-  --text-accent: #00d2ff;
-  --text-inverse: #050608;
+  /* Typography Colors */
+  --text-primary: #FAF6F0;
+  --text-secondary: #C8BFB5;
+  --text-muted: #8E8378;
+  --text-disabled: #5E554C;
+  --text-champagne: #D6A66B;
+  --text-ivory: #F2E5D5;
+  --text-terracotta: #A94C34;
+  --text-inverse: #100C0B;
 
   /* Restrained Accents */
   --accent-cyan: #00d2ff;
   --accent-cyan-rgb: 0, 210, 255;
   --accent-blue: #0284c7;
   --accent-blue-rgb: 2, 132, 199;
-  --accent-mars: #f97316;
-  --accent-moon: #94a3b8;
+  --accent-mars: #A94C34;
+  --accent-moon: #AEBAC8;
   --accent-earth: #10b981;
-  --accent-amber: #eab308;
-  --accent-rose: #ef4444;
+  --accent-amber: #D6A66B;
+  --accent-rose: #61251E;
 
   /* Typography */
+  --font-editorial: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
   /* Layout Dimensions */
   --nav-height: 72px;

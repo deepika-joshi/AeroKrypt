@@ -87,15 +87,15 @@ export default function Navbar({ activeNavId, onNavigate, searchQuery, onSearchC
           aria-label="AEROKRYPT Homepage"
         >
           <div className="brand-glyph" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" strokeOpacity="0.4" />
-              <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#00d2ff" strokeWidth="1.2" transform="rotate(-25 12 12)" />
-              <circle cx="12" cy="12" r="3" fill="#ffffff" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke="#D6A66B" strokeWidth="1.5" strokeOpacity="0.45" />
+              <ellipse cx="12" cy="12" rx="10.5" ry="4" stroke="#A94C34" strokeWidth="1.4" transform="rotate(-25 12 12)" />
+              <circle cx="12" cy="12" r="3.2" fill="#F2E5D5" />
             </svg>
           </div>
           <div className="brand-title-group">
             <span className="brand-title-text">AEROKRYPT</span>
-            <span className="brand-subtitle-tag font-mono">PLANETARY EXPLORATION</span>
+            <span className="brand-subtitle-tag font-mono">EXPLORE &bull; SIMULATE &bull; DISCOVER</span>
           </div>
         </Link>
 
@@ -123,7 +123,7 @@ export default function Navbar({ activeNavId, onNavigate, searchQuery, onSearchC
                   if (onNavigate) onNavigate(item.id)
                 }}
               >
-                <span className="nav-link-text">{item.label}</span>
+                <span className="nav-link-text">{item.id === 'dashboard' ? 'Dashboard' : item.label}</span>
                 <span className="nav-link-indicator" aria-hidden="true" />
               </NavLink>
             )
@@ -330,7 +330,7 @@ export default function Navbar({ activeNavId, onNavigate, searchQuery, onSearchC
               >
                 <span className="mobile-nav-idx font-mono">0{idx + 1}</span>
                 <div className="mobile-nav-content">
-                  <span className="mobile-nav-label">{item.label}</span>
+                  <span className="mobile-nav-label">{item.id === 'dashboard' ? 'Dashboard' : item.label}</span>
                   <span className="mobile-nav-desc">{item.description}</span>
                 </div>
                 <span className="mobile-nav-arrow">&rarr;</span>

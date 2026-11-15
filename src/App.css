@@ -98,6 +98,7 @@ textarea:focus {
 .story-card {
   overflow: hidden;
   position: relative;
+
 }
 
 .story-card-image-wrap {

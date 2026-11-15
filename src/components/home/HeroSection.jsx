@@ -1,4 +1,14 @@
-export default function HeroSection({ onExploreClick, onLearnClick }) {
+import { useState } from 'react'
+import AnimatedPlanetaryHero from './AnimatedPlanetaryHero.jsx'
+
+export default function HeroSection({
+  onExploreClick,
+  onLearnClick,
+  onMarsClick,
+  onMoonClick,
+}) {
+  const [activePlanet, setActivePlanet] = useState('mars')
+
   const handleExploreClick = () => {
     if (onExploreClick) {
       onExploreClick()
@@ -14,28 +24,45 @@ export default function HeroSection({ onExploreClick, onLearnClick }) {
     if (onLearnClick) {
       onLearnClick()
     } else {
-      const target = document.getElementById('how-it-works')
+      const target = document.getElementById('about-aerokrypt') || document.getElementById('how-it-works')
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     }
   }
 
+  const handleSelectMars = () => {
+    setActivePlanet('mars')
+    if (onMarsClick) {
+      onMarsClick()
+    }
+  }
+
+  const handleSelectMoon = () => {
+    setActivePlanet('moon')
+    if (onMoonClick) {
+      onMoonClick()
+    }
+  }
+
   return (
-    <section className="aerospace-hero-section" aria-label="AEROKRYPT Platform Hero">
-      {/* 1. Large Cinematic Planetary Background */}
+    <section
+      className={`aerospace-hero-section theme-mode-${activePlanet}`}
+      aria-label="AEROKRYPT Cinematic Planetary Hero"
+    >
+      {/* 1. Deep Space Cinematic Atmospheric Layers */}
       <div className="hero-background-viewport" aria-hidden="true">
-        {/* Deep space void & starfield */}
+        {/* Deep space void & layered starfield */}
         <div className="hero-stars-layer" />
+        <div className="hero-deep-void" />
 
-        {/* Cinematic landscape & planetary horizon */}
-        <div className="hero-cinematic-backdrop" />
-        <div className="hero-planetary-horizon" />
+        {/* Dynamic planetary atmosphere nebular aura */}
+        <div className={`hero-nebula-atmosphere nebula-${activePlanet}`} />
 
-        {/* Telemetry coordinate grid */}
+        {/* Subtle geometric telemetry grid */}
         <div className="hero-telemetry-grid" />
 
-        {/* Contrast vignette & atmospheric gradient */}
+        {/* Edge vignette */}
         <div className="hero-vignette-overlay" />
       </div>
 
@@ -43,85 +70,123 @@ export default function HeroSection({ onExploreClick, onLearnClick }) {
       <div className="hero-telemetry-top font-mono">
         <div className="telemetry-item">
           <span className="telemetry-dot" aria-hidden="true" />
-          <span>MISSION TELEMETRY: NOMINAL</span>
+          <span>MISSION CONOPS: NOMINAL</span>
         </div>
         <div className="telemetry-item hide-mobile">
           <span className="telemetry-bracket">[</span>
-          <span>PLANETARY ANALOGUE RESEARCH CONSORTIUM</span>
+          <span>PLANETARY EXPLORATION CONSORTIUM</span>
           <span className="telemetry-bracket">]</span>
         </div>
         <div className="telemetry-item hide-mobile">
-          <span>MARS MOLA &bull; MOON LOLA INTEGRATION</span>
+          <span className="telemetry-accent">
+            {activePlanet === 'mars' ? 'MARS MOLA MEGDR // IAU 2000' : 'MOON LOLA GDR // IAU 2000'}
+          </span>
         </div>
       </div>
 
-      {/* 3. Central Hero Content (Single Unified Platform Introduction) */}
-      <div className="hero-content-shell">
-        <div className="hero-subhead-badge font-mono">
-          <span className="badge-prefix">//</span> PLANETARY SCIENCE &amp; ANALOGUE VALIDATION
-        </div>
+      {/* 3. Main Hero Two-Column Grid */}
+      <div className="hero-editorial-container">
+        {/* Left Column: Premium Typography & Actions */}
+        <div className="hero-copy-column">
+          {/* Eyebrow Label & Capability Tag */}
+          <div className="hero-label-group">
+            <span className="hero-category-label font-mono">
+              <span className="label-prefix">//</span> PLANETARY EXPLORATION PLATFORM
+            </span>
+            <span className="hero-capability-badge font-mono">
+              Evaluate Earth Sites for Mars and Moon Research
+            </span>
+          </div>
 
-        {/* Exact Main Headline */}
-        <h1 className="hero-title-typography">
-          Evaluate Earth Sites for Mars and Moon Research
-        </h1>
+          {/* Large Hero Headline */}
+          <h1 className="hero-headline-typography">
+            Explore <span className="headline-serif-italic">Beyond Earth.</span>
+          </h1>
 
-        {/* Exact Supporting Description */}
-        <p className="hero-tagline-text">
-          AEROKRYPT is a planetary analogue research platform that helps researchers discover terrestrial environments, compare their geological and terrain characteristics with Mars and the Moon, and assess their relevance using available scientific evidence.
-        </p>
+          {/* Clean Description */}
+          <p className="hero-editorial-description">
+            Discover planetary environments, explore Earth analogue locations and experience the science
+            behind Mars and Moon exploration through one unified platform.
+          </p>
 
-        {/* Exactly Two Hero Actions */}
-        <div className="hero-actions-group">
-          {/* Action 1: Explore the Platform */}
-          <button
-            type="button"
-            className="btn-aerospace btn-aerospace-solid"
-            onClick={handleExploreClick}
-          >
-            <span>Explore the Platform</span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+          {/* 3 Primary CTA Buttons + Learn Trigger */}
+          <div className="hero-cta-button-group">
+            {/* CTA 1: Explore the Platform */}
+            <button
+              type="button"
+              className="btn-hero-primary"
+              onClick={handleExploreClick}
+              aria-label="Explore the Platform"
             >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <polyline points="19 12 12 19 5 12" />
-            </svg>
-          </button>
+              <span className="btn-text">Explore the Platform</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="19 12 12 19 5 12" />
+              </svg>
+            </button>
 
-          {/* Action 2: Learn How It Works */}
-          <button
-            type="button"
-            className="btn-aerospace"
-            onClick={handleLearnClick}
-          >
-            <span>Learn How It Works</span>
-            <span className="btn-arrow" aria-hidden="true">&rarr;</span>
-          </button>
+            {/* CTA 2: Explore Mars */}
+            <button
+              type="button"
+              className={`btn-hero-mars ${activePlanet === 'mars' ? 'is-selected' : ''}`}
+              onClick={handleSelectMars}
+              aria-label="Explore Mars Planetary Environment"
+            >
+              <span className="btn-indicator mars-indicator" aria-hidden="true" />
+              <span className="btn-text">Explore Mars</span>
+            </button>
+
+            {/* CTA 3: Explore Moon */}
+            <button
+              type="button"
+              className={`btn-hero-moon ${activePlanet === 'moon' ? 'is-selected' : ''}`}
+              onClick={handleSelectMoon}
+              aria-label="Explore Moon Planetary Environment"
+            >
+              <span className="btn-indicator moon-indicator" aria-hidden="true" />
+              <span className="btn-text">Explore Moon</span>
+            </button>
+
+            {/* Learn trigger */}
+            <button
+              type="button"
+              className="btn-hero-learn font-mono"
+              onClick={handleLearnClick}
+              aria-label="Learn How AeroKrypt Works"
+            >
+              <span>Learn How It Works &darr;</span>
+            </button>
+          </div>
+
+          {/* Quick Body Stats Indicator */}
+          <div className="hero-target-status font-mono">
+            <span className="status-indicator-dot" aria-hidden="true" />
+            <span className="status-text">
+              CURRENT FOCUS: {activePlanet === 'mars' ? 'MARS (0.380G // 610 PA)' : 'MOON (0.166G // 10⁻¹⁰ PA)'}
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* 4. Minimalist Bottom Scroll Cue */}
-      <div
-        className="hero-scroll-indicator"
-        onClick={handleExploreClick}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') handleExploreClick()
-        }}
-        aria-label="Scroll to Explore the Platform"
-      >
-        <span className="scroll-label font-mono">SCROLL TO EXPLORE</span>
-        <div className="scroll-arrow-line">
-          <div className="scroll-dot" />
+        {/* Right Column: Layered Animated Mars and Moon Planetary Stage */}
+        <div className="hero-planet-visual-column">
+          <AnimatedPlanetaryHero
+            activePlanet={activePlanet}
+            onSelectPlanet={(planet) => {
+              setActivePlanet(planet)
+              if (planet === 'mars' && onMarsClick) onMarsClick()
+              if (planet === 'moon' && onMoonClick) onMoonClick()
+            }}
+          />
         </div>
       </div>
     </section>

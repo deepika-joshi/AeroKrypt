@@ -125,11 +125,11 @@
 }
 
 .nav-link-item:hover {
-  color: #ffffff;
+  color: var(--warm-ivory);
 }
 
 .nav-link-item.active {
-  color: #ffffff;
+  color: var(--champagne-gold);
 }
 
 /* Signature Animated Underline */
@@ -139,7 +139,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: #ffffff;
+  background: var(--champagne-gold);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--transition-aerospace);
@@ -151,8 +151,8 @@
 }
 
 .nav-link-item.active .nav-link-indicator {
-  background: var(--accent-cyan);
-  box-shadow: 0 0 8px rgba(0, 210, 255, 0.6);
+  background: var(--champagne-gold);
+  box-shadow: 0 0 10px rgba(214, 166, 107, 0.5);
 }
 
 /* Upcoming Events Nav Dropdown */
