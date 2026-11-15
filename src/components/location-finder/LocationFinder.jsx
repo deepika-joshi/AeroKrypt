@@ -715,6 +715,7 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
                   onOpenAddModal={() => setIsAddModalOpen(true)}
                   filterBody={primaryFilter}
                   onFilterChange={(tabId) => setPrimaryFilter(tabId)}
+                  onSwitchTo2D={() => setViewMode('map')}
                 />
               </div>
             )}

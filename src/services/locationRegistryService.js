@@ -31,6 +31,43 @@ export function latLngToVector3(lat, lng, radius) {
 }
 
 /**
+ * Calculates spherical angular distance in degrees between two points on a sphere.
+ * Used to determine camera front-facing visibility on 3D planetary globe.
+ * @param {number} lat1 - Point 1 latitude
+ * @param {number} lng1 - Point 1 longitude
+ * @param {number} lat2 - Point 2 latitude
+ * @param {number} lng2 - Point 2 longitude
+ * @returns {number} Angular separation in degrees [0, 180]
+ */
+export function getSphericalDistanceDeg(lat1, lng1, lat2, lng2) {
+  const rad = Math.PI / 180
+  const phi1 = lat1 * rad
+  const phi2 = lat2 * rad
+  const deltaLambda = (lng2 - lng1) * rad
+  const cosDist = Math.sin(phi1) * Math.sin(phi2) + Math.cos(phi1) * Math.cos(phi2) * Math.cos(deltaLambda)
+  const clamped = Math.max(-1, Math.min(1, cosDist))
+  return Math.acos(clamped) * (180 / Math.PI)
+}
+
+/**
+ * Maps location target bodies and analogue relevance to a human-readable badge label.
+ * @param {Object} loc - Location record
+ * @returns {string} Human-readable analogue classification label
+ */
+export function getAnalogueClassificationLabel(loc) {
+  if (!loc) return 'Planetary Analogue'
+  const isMars = loc.targetBodies?.includes('Mars') || loc.analogueRelevance === 'MARS' || loc.primaryTarget === 'Mars'
+  const isMoon = loc.targetBodies?.includes('Moon') || loc.analogueRelevance === 'MOON' || loc.primaryTarget === 'Moon'
+  const isBoth = (isMars && isMoon) || loc.analogueRelevance === 'BOTH'
+
+  if (isBoth) return 'Dual-purpose Analogue (Mars & Moon)'
+  if (isMars) return 'Mars Analogue Site'
+  if (isMoon) return 'Lunar Analogue Site'
+  if (loc.locationCategory === 'RESEARCH_FACILITY') return 'Research Facility'
+  return 'Planetary Analogue'
+}
+
+/**
  * Extracts or parses accurate numeric latitude and longitude from location record.
  * @param {Object} loc - Location record
  * @returns {{ lat: number, lng: number }} Numeric WGS 84 coordinates

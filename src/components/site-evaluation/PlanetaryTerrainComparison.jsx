@@ -19,6 +19,7 @@ import { compareTerrainParameters } from '../../services/terrainAnalysisService.
 import { saveEvaluationRecord } from '../../services/researchRecordService.js'
 import InteractiveMap from '../common/InteractiveMap.jsx'
 import StatusBadge from '../common/StatusBadge.jsx'
+import EarthSiteMediaViewer from './EarthSiteMediaViewer.jsx'
 
 export default function PlanetaryTerrainComparison({
   initialTargetBody = 'Mars',
@@ -536,12 +537,10 @@ export default function PlanetaryTerrainComparison({
           </div>
 
           <div style={{ height: '240px', position: 'relative' }}>
-            <InteractiveMap
-              mode="earth"
-              locations={[earthLocation]}
-              activeLocationId={earthLocation.id}
+            <EarthSiteMediaViewer
+              locationId={earthLocation.id}
+              location={earthLocation}
               height="240px"
-              defaultZoom={5}
             />
           </div>
 

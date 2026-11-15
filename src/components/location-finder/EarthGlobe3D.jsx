@@ -102,6 +102,7 @@ export default function EarthGlobe3D({
   onOpenAddModal = null,
   filterBody = 'ALL', // 'ALL' | 'MARS' | 'MOON' | 'DUAL' | 'FACILITY'
   onFilterChange = null,
+  onSwitchTo2D = null,
 }) {
   const mountRef = useRef(null)
   const sceneRef = useRef(null)
@@ -899,6 +900,27 @@ export default function EarthGlobe3D({
         >
           ↺ Reset
         </button>
+
+        {onSwitchTo2D && (
+          <button
+            type="button"
+            onClick={onSwitchTo2D}
+            title="Switch to 2D Map"
+            style={{
+              background: 'rgba(5, 6, 8, 0.88)',
+              border: '1px solid rgba(0, 210, 255, 0.3)',
+              color: 'var(--accent-cyan)',
+              padding: '6px 10px',
+              fontSize: '11px',
+              borderRadius: '2px',
+              cursor: 'pointer',
+              backdropFilter: 'blur(6px)',
+              textTransform: 'uppercase',
+            }}
+          >
+            🗺 2D Map
+          </button>
+        )}
       </div>
 
       {/* =========================================================================
