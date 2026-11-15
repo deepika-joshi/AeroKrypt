@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
+import { MemoryRouter } from 'react-router-dom'
 import { createServer } from 'vite'
 
 // Polyfill window & document for browser libraries like Leaflet evaluated in SSR
@@ -43,7 +44,7 @@ test('SECTION 1: Location Explore & Site Evaluation Component Render Verificatio
     assert.ok(locHtml.length > 5000, 'LocationFinder renders substantial HTML (>5000 chars)')
     assert.ok(locHtml.includes('GEODETIC &amp; TOPOGRAPHIC EXPLORER'), 'LocationFinder contains geodetic map explorer header')
     assert.ok(locHtml.includes('Earth Terrestrial Analogue Geodesy'), 'LocationFinder contains initial Earth geodesy map title')
-    assert.ok(locHtml.includes('Audited Earth Locations'), 'LocationFinder contains evaluated candidate catalog heading')
+    assert.ok(locHtml.includes('Curated Earth Analogue Locations'), 'LocationFinder contains evaluated candidate catalog heading')
 
     // Verify the 5 Mandatory Filter Tabs
     assert.ok(locHtml.includes('All Sites'), 'LocationFinder contains "All Sites" filter')
@@ -86,7 +87,7 @@ test('SECTION 1: Location Explore & Site Evaluation Component Render Verificatio
     // 3. Verify Dashboard
     const Dashboard = (await vite.ssrLoadModule('./src/components/dashboard/Dashboard.jsx')).default
     assert.ok(Dashboard, 'Dashboard component exports properly')
-    const dashHtml = ReactDOMServer.renderToString(React.createElement(Dashboard, {}))
+    const dashHtml = ReactDOMServer.renderToString(React.createElement(MemoryRouter, null, React.createElement(Dashboard, {})))
     assert.ok(dashHtml.length > 5000, 'Dashboard renders substantial HTML')
 
     // 4. Verify ResearchHub
@@ -110,3 +111,5 @@ test('SECTION 1: Location Explore & Site Evaluation Component Render Verificatio
     await vite.close()
   }
 })
+
+

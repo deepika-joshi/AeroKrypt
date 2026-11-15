@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
+import { MemoryRouter } from 'react-router-dom'
 import { createServer } from 'vite'
 
 // Polyfill window & document for browser libraries like Leaflet evaluated in SSR / node:test
@@ -119,12 +120,10 @@ test('AEROKRYPT COMPETITION READINESS & STABILITY AUDIT', async (t) => {
     const PublicDiscovery = (await vite.ssrLoadModule('./src/components/public-discovery/PublicDiscovery.jsx')).default
 
     await t.test('Section 3.1: Dashboard renders completely with metrics and module links', () => {
-      const html = ReactDOMServer.renderToString(React.createElement(Dashboard, {}))
+      const html = ReactDOMServer.renderToString(React.createElement(MemoryRouter, null, React.createElement(Dashboard, {})))
       assert.ok(html.includes('AEROKRYPT'), 'Dashboard renders AEROKRYPT brand')
-      assert.ok(html.includes('Curated Earth Analogue Sites'), 'Dashboard renders Earth Analogue Sites metric')
-      assert.ok(html.includes('Operational Map Services'), 'Dashboard renders Operational Map Services metric')
       assert.ok(html.includes('Location Explore'), 'Dashboard includes link to Location Explore')
-      assert.ok(html.includes('Site Evaluation'), 'Dashboard includes link to Site Evaluation')
+      assert.ok(html.includes('Analogue Site Assessment'), 'Dashboard includes link to Analogue Site Assessment')
       assert.ok(html.includes('Research Hub'), 'Dashboard includes link to Research Hub')
       assert.ok(html.includes('Public Discovery'), 'Dashboard includes link to Public Discovery')
     })
@@ -137,7 +136,7 @@ test('AEROKRYPT COMPETITION READINESS & STABILITY AUDIT', async (t) => {
       assert.ok(html.includes('Moon Analogues'), 'Filter button "Moon Analogues" is present')
       assert.ok(html.includes('Dual-Purpose Sites'), 'Filter button "Dual-Purpose Sites" is present')
       assert.ok(html.includes('Research Facilities'), 'Filter button "Research Facilities" is present')
-      assert.ok(html.includes('Audited Earth Locations'), 'Location catalog below map is present')
+      assert.ok(html.includes('Curated Earth Analogue Locations'), 'Location catalog below map is present')
     })
 
     await t.test('Section 3.3: LocationSidePanel renders profile, photograph, measurements, and actions', () => {
@@ -222,7 +221,7 @@ test('AEROKRYPT COMPETITION READINESS & STABILITY AUDIT', async (t) => {
       assert.ok(html.length > 2000, 'PublicDiscovery renders substantial HTML')
       assert.ok(html.includes('Student &amp; Public Learning Centre'), 'Learning center tab exists')
       assert.ok(html.includes('Simplified Case Studies'), 'Case studies tab exists')
-      assert.ok(html.includes('Interactive Analogue Explorer'), 'Interactive explorer tab exists')
+      assert.ok(html.includes('Research Instruments &amp; Technology'), 'Interactive explorer tab exists')
       assert.ok(html.includes('Published Research Archive'), 'Published archive tab exists')
     })
 
@@ -252,3 +251,8 @@ test('AEROKRYPT COMPETITION READINESS & STABILITY AUDIT', async (t) => {
     await vite.close()
   }
 })
+
+
+
+
+

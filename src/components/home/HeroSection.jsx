@@ -1,13 +1,20 @@
-import { ANALOGUE_LOCATIONS } from '../../data/locationsData.js'
-import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
-import { MISSION_OBJECTIVES } from '../../data/missionObjectives.js'
-
-export default function HeroSection({ onNavigate, onExploreClick }) {
-  const handleScrollDown = () => {
+export default function HeroSection({ onExploreClick, onLearnClick }) {
+  const handleExploreClick = () => {
     if (onExploreClick) {
       onExploreClick()
     } else {
-      const target = document.getElementById('platform-overview-section')
+      const target = document.getElementById('explore-platform')
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }
+
+  const handleLearnClick = () => {
+    if (onLearnClick) {
+      onLearnClick()
+    } else {
+      const target = document.getElementById('how-it-works')
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
@@ -15,124 +22,104 @@ export default function HeroSection({ onNavigate, onExploreClick }) {
   }
 
   return (
-    <section className="aerospace-hero-section" aria-label="AEROKRYPT Mission Hero">
-      {/* 1. Cinematic Planetary Background with Animated Subtle Drift */}
-      <div className="hero-background-viewport">
+    <section className="aerospace-hero-section" aria-label="AEROKRYPT Platform Hero">
+      {/* 1. Large Cinematic Planetary Background */}
+      <div className="hero-background-viewport" aria-hidden="true">
         {/* Deep space void & starfield */}
         <div className="hero-stars-layer" />
 
-        {/* Cinematic Martian & Lunar horizon curvature with glowing atmospheric limb */}
+        {/* Cinematic landscape & planetary horizon */}
+        <div className="hero-cinematic-backdrop" />
         <div className="hero-planetary-horizon" />
 
-        {/* Subtle aerospace telemetry coordinate grid */}
+        {/* Telemetry coordinate grid */}
         <div className="hero-telemetry-grid" />
 
-        {/* Vignette & contrast gradations */}
+        {/* Contrast vignette & atmospheric gradient */}
         <div className="hero-vignette-overlay" />
       </div>
 
-      {/* 2. Top Mission Telemetry Header Bar */}
+      {/* 2. Top Mission Telemetry Bar */}
       <div className="hero-telemetry-top font-mono">
         <div className="telemetry-item">
-          <span className="telemetry-dot" />
-          <span>STATUS: OPERATIONAL</span>
+          <span className="telemetry-dot" aria-hidden="true" />
+          <span>MISSION TELEMETRY: NOMINAL</span>
         </div>
         <div className="telemetry-item hide-mobile">
           <span className="telemetry-bracket">[</span>
-          <span>MARS MOLA &bull; MOON LOLA INTEGRATION</span>
+          <span>PLANETARY ANALOGUE RESEARCH CONSORTIUM</span>
           <span className="telemetry-bracket">]</span>
         </div>
         <div className="telemetry-item hide-mobile">
-          <span>LAT/LON WGS 84 &bull; AREOID DATUM</span>
+          <span>MARS MOLA &bull; MOON LOLA INTEGRATION</span>
         </div>
       </div>
 
-      {/* 3. Central Hero Content */}
+      {/* 3. Central Hero Content (Single Unified Platform Introduction) */}
       <div className="hero-content-shell">
         <div className="hero-subhead-badge font-mono">
-          <span className="badge-prefix">//</span> AEROSPACE PLANETARY SCIENCE &amp; ANALOGUE VALIDATION
+          <span className="badge-prefix">//</span> PLANETARY SCIENCE &amp; ANALOGUE VALIDATION
         </div>
 
+        {/* Exact Main Headline */}
         <h1 className="hero-title-typography">
-          AEROKRYPT
+          Evaluate Earth Sites for Mars and Moon Research
         </h1>
 
+        {/* Exact Supporting Description */}
         <p className="hero-tagline-text">
-          Evaluate Earth sites for Mars and Moon research using real terrain data, geological evidence and documented field studies.
+          AEROKRYPT is a planetary analogue research platform that helps researchers discover terrestrial environments, compare their geological and terrain characteristics with Mars and the Moon, and assess their relevance using available scientific evidence.
         </p>
 
-        {/* SpaceX-Inspired Ghost Buttons */}
+        {/* Exactly Two Hero Actions */}
         <div className="hero-actions-group">
+          {/* Action 1: Explore the Platform */}
           <button
             type="button"
             className="btn-aerospace btn-aerospace-solid"
-            onClick={handleScrollDown}
+            onClick={handleExploreClick}
           >
-            <span>EXPLORE THE PLATFORM</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <span>Explore the Platform</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <line x1="12" y1="5" x2="12" y2="19" />
               <polyline points="19 12 12 19 5 12" />
             </svg>
           </button>
 
+          {/* Action 2: Learn How It Works */}
           <button
             type="button"
             className="btn-aerospace"
-            onClick={() => onNavigate && onNavigate('site-evaluation')}
+            onClick={handleLearnClick}
           >
-            <span>ANALOGUE SITE ASSESSMENT</span>
-            <span className="btn-arrow">&rarr;</span>
+            <span>Learn How It Works</span>
+            <span className="btn-arrow" aria-hidden="true">&rarr;</span>
           </button>
-
-          <button
-            type="button"
-            className="btn-aerospace btn-aerospace-cyan"
-            onClick={() => onNavigate && onNavigate('location-explorer')}
-          >
-            <span>LOCATION EXPLORE</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="12 8 8 12 12 16 12 8" />
-            </svg>
-          </button>
-        </div>
-
-        {/* 4. Bottom Hero Metrics Strip */}
-        <div className="hero-metrics-strip font-mono">
-          <div className="metric-cell">
-            <div className="metric-number">{ANALOGUE_LOCATIONS.length.toString().padStart(2, '0')}</div>
-            <div className="metric-desc">CURATED EARTH SITES</div>
-          </div>
-          <div className="metric-divider" />
-          <div className="metric-cell">
-            <div className="metric-number">{PLANETARY_TERRAIN_DATASETS.length.toString().padStart(2, '0')}</div>
-            <div className="metric-desc">PLANETARY TERRAINS</div>
-          </div>
-          <div className="metric-divider" />
-          <div className="metric-cell">
-            <div className="metric-number">{MISSION_OBJECTIVES.length.toString().padStart(2, '0')}</div>
-            <div className="metric-desc">CONOPS PROTOCOLS</div>
-          </div>
-          <div className="metric-divider" />
-          <div className="metric-cell">
-            <div className="metric-number">TIERED</div>
-            <div className="metric-desc">EVIDENCE REGISTRY</div>
-          </div>
         </div>
       </div>
 
-      {/* 5. Minimalist Scroll Indicator */}
+      {/* 4. Minimalist Bottom Scroll Cue */}
       <div
         className="hero-scroll-indicator"
-        onClick={handleScrollDown}
+        onClick={handleExploreClick}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') handleScrollDown()
+          if (e.key === 'Enter' || e.key === ' ') handleExploreClick()
         }}
-        aria-label="Scroll to exploration sections"
+        aria-label="Scroll to Explore the Platform"
       >
-        <span className="scroll-label font-mono">SCROLL</span>
+        <span className="scroll-label font-mono">SCROLL TO EXPLORE</span>
         <div className="scroll-arrow-line">
           <div className="scroll-dot" />
         </div>
@@ -140,4 +127,3 @@ export default function HeroSection({ onNavigate, onExploreClick }) {
     </section>
   )
 }
-

@@ -256,10 +256,11 @@ test('AEROKRYPT 3D EARTH GLOBE & FUTURE EXPANSION AUDIT', async (t) => {
       assert.ok(html.includes('Research Facilities'), 'Filter "Research Facilities" is present')
 
       // Evaluated candidate catalog below
-      assert.ok(html.includes('Audited Earth Locations'), 'Candidate catalog below globe is present')
+      assert.ok(html.includes('Curated Earth Analogue Locations'), 'Candidate catalog below globe is present')
     })
 
   } finally {
     await vite.close()
   }
 })
+

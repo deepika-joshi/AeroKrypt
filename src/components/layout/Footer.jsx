@@ -1,11 +1,32 @@
-export default function Footer({ onNavigate }) {
+import { Link } from 'react-router-dom'
+
+export default function Footer({ onNavigate, isHome = false }) {
   const handleNavClick = (id) => {
     if (onNavigate) {
       onNavigate(id)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Exact minimal footer for Home page
+  if (isHome) {
+    return (
+      <footer className="aerospace-minimal-footer" aria-label="AEROKRYPT Minimal Footer">
+        <div className="minimal-footer-container">
+          <div className="minimal-footer-links font-mono">
+            <span className="minimal-footer-item">Contact Us</span>
+            <span className="minimal-footer-item">Privacy Policy</span>
+            <span className="minimal-footer-item">Media</span>
+          </div>
+          <div className="minimal-footer-copy font-mono">
+            &copy; 2026 AEROKRYPT. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    )
+  }
+
+  // Detailed repository footer for inner platform subsystems
   return (
     <footer className="aerospace-footer">
       <div className="footer-container">
@@ -28,29 +49,29 @@ export default function Footer({ onNavigate }) {
             <h4 className="footer-heading font-mono">// PLATFORM MODULES</h4>
             <ul className="footer-links-list">
               <li>
-                <button type="button" onClick={() => handleNavClick('dashboard')} className="footer-link">
-                  Dashboard Overview
-                </button>
+                <Link to="/" onClick={() => handleNavClick('dashboard')} className="footer-link">
+                  Home Overview
+                </Link>
               </li>
               <li>
-                <button type="button" onClick={() => handleNavClick('location-explorer')} className="footer-link">
+                <Link to="/locations" onClick={() => handleNavClick('location-explorer')} className="footer-link">
                   Location Explore &amp; Map
-                </button>
+                </Link>
               </li>
               <li>
-                <button type="button" onClick={() => handleNavClick('site-evaluation')} className="footer-link">
+                <Link to="/assessment" onClick={() => handleNavClick('site-evaluation')} className="footer-link">
                   Analogue Site Assessment
-                </button>
+                </Link>
               </li>
               <li>
-                <button type="button" onClick={() => handleNavClick('research-hub')} className="footer-link">
+                <Link to="/research" onClick={() => handleNavClick('research-hub')} className="footer-link">
                   Research Hub &amp; Records
-                </button>
+                </Link>
               </li>
               <li>
-                <button type="button" onClick={() => handleNavClick('public-discovery')} className="footer-link">
+                <Link to="/discovery" onClick={() => handleNavClick('public-discovery')} className="footer-link">
                   Public Discovery &amp; Education
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
