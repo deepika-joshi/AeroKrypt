@@ -41,7 +41,7 @@ export default function SimulationPreviewSection({ onNavigate }) {
   }
 
   return (
-    <section id="planetary-simulation" className="simulation-preview-section" aria-label="Mars and Moon Simulation Preview">
+    <section id="planetary-simulation" className="simulation-preview-section reveal-on-scroll" aria-label="Mars and Moon Simulation Preview">
       <div className="simulation-container">
         {/* Section Header */}
         <div className="simulation-header-block">

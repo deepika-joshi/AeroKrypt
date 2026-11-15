@@ -64,7 +64,7 @@ export default function AboutAeroKrypt() {
   ]
 
   return (
-    <section id="about-aerokrypt" className="about-aerokrypt-section" aria-label="About AeroKrypt Platform">
+    <section id="about-aerokrypt" className="about-aerokrypt-section reveal-on-scroll" aria-label="About AeroKrypt Platform">
       <div className="about-editorial-container">
         {/* Section Header */}
         <div className="about-header-block">

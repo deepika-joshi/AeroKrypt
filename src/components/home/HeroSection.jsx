@@ -1,14 +1,13 @@
-import { useState } from 'react'
 import AnimatedPlanetaryHero from './AnimatedPlanetaryHero.jsx'
 
 export default function HeroSection({
+  activePlanet = 'mars',
+  onSelectPlanet,
   onExploreClick,
   onLearnClick,
-  onMarsClick,
-  onMoonClick,
+  onExploreMarsClick,
+  onExploreMoonClick,
 }) {
-  const [activePlanet, setActivePlanet] = useState('mars')
-
   const handleExploreClick = () => {
     if (onExploreClick) {
       onExploreClick()
@@ -31,17 +30,27 @@ export default function HeroSection({
     }
   }
 
-  const handleSelectMars = () => {
-    setActivePlanet('mars')
-    if (onMarsClick) {
-      onMarsClick()
+  const handleExploreMars = () => {
+    if (onSelectPlanet) onSelectPlanet('mars')
+    if (onExploreMarsClick) {
+      onExploreMarsClick()
+    } else {
+      const target = document.getElementById('mars-moon-exploration')
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
   }
 
-  const handleSelectMoon = () => {
-    setActivePlanet('moon')
-    if (onMoonClick) {
-      onMoonClick()
+  const handleExploreMoon = () => {
+    if (onSelectPlanet) onSelectPlanet('moon')
+    if (onExploreMoonClick) {
+      onExploreMoonClick()
+    } else {
+      const target = document.getElementById('mars-moon-exploration')
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
   }
 
@@ -111,7 +120,7 @@ export default function HeroSection({
 
           {/* 3 Primary CTA Buttons + Learn Trigger */}
           <div className="hero-cta-button-group">
-            {/* CTA 1: Explore the Platform */}
+            {/* CTA 1: Explore the Platform (scrolls to platform features) */}
             <button
               type="button"
               className="btn-hero-primary"
@@ -135,23 +144,23 @@ export default function HeroSection({
               </svg>
             </button>
 
-            {/* CTA 2: Explore Mars */}
+            {/* CTA 2: Explore Mars (Selects Mars + Scrolls to Two Worlds) */}
             <button
               type="button"
               className={`btn-hero-mars ${activePlanet === 'mars' ? 'is-selected' : ''}`}
-              onClick={handleSelectMars}
-              aria-label="Explore Mars Planetary Environment"
+              onClick={handleExploreMars}
+              aria-label="Explore Mars (Selects Mars and navigates to planetary exploration)"
             >
               <span className="btn-indicator mars-indicator" aria-hidden="true" />
               <span className="btn-text">Explore Mars</span>
             </button>
 
-            {/* CTA 3: Explore Moon */}
+            {/* CTA 3: Explore Moon (Selects Moon + Scrolls to Two Worlds) */}
             <button
               type="button"
               className={`btn-hero-moon ${activePlanet === 'moon' ? 'is-selected' : ''}`}
-              onClick={handleSelectMoon}
-              aria-label="Explore Moon Planetary Environment"
+              onClick={handleExploreMoon}
+              aria-label="Explore Moon (Selects Moon and navigates to planetary exploration)"
             >
               <span className="btn-indicator moon-indicator" aria-hidden="true" />
               <span className="btn-text">Explore Moon</span>
@@ -181,11 +190,7 @@ export default function HeroSection({
         <div className="hero-planet-visual-column">
           <AnimatedPlanetaryHero
             activePlanet={activePlanet}
-            onSelectPlanet={(planet) => {
-              setActivePlanet(planet)
-              if (planet === 'mars' && onMarsClick) onMarsClick()
-              if (planet === 'moon' && onMoonClick) onMoonClick()
-            }}
+            onSelectPlanet={onSelectPlanet}
           />
         </div>
       </div>

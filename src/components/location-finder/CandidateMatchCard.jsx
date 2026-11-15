@@ -23,31 +23,51 @@ export default function CandidateMatchCard({
     missingData,
   } = matchResult
 
+  const isMars = location.analogueRelevance === 'MARS' || (location.targetBodies && location.targetBodies.includes('Mars') && !location.targetBodies.includes('Moon'))
+  const isMoon = location.analogueRelevance === 'MOON' || (location.targetBodies && !location.targetBodies.includes('Mars') && location.targetBodies.includes('Moon'))
+
+  const targetBodyBadgeColor = isMars ? '#A94C34' : isMoon ? '#AEBAC8' : '#D6A66B'
+  const targetBodyBadgeBg = isMars ? 'rgba(169, 76, 52, 0.16)' : isMoon ? 'rgba(174, 186, 200, 0.14)' : 'rgba(214, 166, 107, 0.16)'
+
   return (
     <article
-      className={`candidate-card ${isPreFocused ? 'pre-focused' : ''} ${
+      className={`candidate-card reveal-on-scroll ${isPreFocused ? 'pre-focused' : ''} ${
         isSelectedForCompare ? 'selected-for-compare' : ''
       }`}
       id={`candidate-${location.id}`}
     >
-      {/* Top Banner: Alignment Status & Match Counts */}
+      {/* =========================================================================
+          A. CARD HEADER: Name, Region, Analogue Category & Coordinates
+          ========================================================================= */}
       <div className="candidate-card-top">
         <div className="candidate-card-title-group">
           <div className="candidate-meta-line" style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <span className="candidate-target-body font-mono">
+            <span
+              className="candidate-target-body font-mono"
+              style={{
+                color: targetBodyBadgeColor,
+                backgroundColor: targetBodyBadgeBg,
+                border: `1px solid ${targetBodyBadgeColor}44`,
+                padding: '2px 7px',
+                borderRadius: '3px',
+                fontWeight: 700,
+                fontSize: '10px',
+                letterSpacing: '0.04em',
+              }}
+            >
               {location.analogueRelevance ? `${location.analogueRelevance} ANALOGUE` : `${location.primaryTarget} ANALOGUE`}
             </span>
             <span
               className="candidate-category-badge font-mono"
               style={{
-                fontSize: '9px',
-                padding: '1px 5px',
-                borderRadius: '2px',
-                background: location.locationCategory === 'RESEARCH_FACILITY' ? 'rgba(192, 132, 252, 0.15)' : 'rgba(0, 210, 255, 0.12)',
-                color: location.locationCategory === 'RESEARCH_FACILITY' ? '#c084fc' : '#00d2ff',
-                border: `1px solid ${location.locationCategory === 'RESEARCH_FACILITY' ? '#c084fc' : '#00d2ff'}`,
+                fontSize: '9.5px',
+                padding: '2px 6px',
+                borderRadius: '3px',
+                background: location.locationCategory === 'RESEARCH_FACILITY' ? 'rgba(196, 146, 85, 0.15)' : 'rgba(214, 166, 107, 0.1)',
+                color: location.locationCategory === 'RESEARCH_FACILITY' ? '#C49255' : 'var(--champagne-gold, #D6A66B)',
+                border: `1px solid ${location.locationCategory === 'RESEARCH_FACILITY' ? 'rgba(196, 146, 85, 0.35)' : 'rgba(214, 166, 107, 0.25)'}`,
                 fontWeight: 600,
-                letterSpacing: '0.05em',
+                letterSpacing: '0.04em',
               }}
             >
               {location.locationCategory === 'RESEARCH_FACILITY' ? 'RESEARCH FACILITY' : 'NATURAL FIELD SITE'}
@@ -56,12 +76,12 @@ export default function CandidateMatchCard({
               <span
                 className="candidate-verif-badge font-mono"
                 style={{
-                  fontSize: '9px',
-                  padding: '1px 5px',
-                  borderRadius: '2px',
-                  background: 'rgba(255, 255, 255, 0.06)',
+                  fontSize: '9.5px',
+                  padding: '2px 6px',
+                  borderRadius: '3px',
+                  background: location.verificationStatus === 'VERIFIED' ? 'rgba(74, 222, 128, 0.12)' : 'rgba(250, 204, 21, 0.12)',
                   color: location.verificationStatus === 'VERIFIED' ? '#4ade80' : '#facc15',
-                  border: `1px solid ${location.verificationStatus === 'VERIFIED' ? 'rgba(74, 222, 128, 0.4)' : 'rgba(250, 204, 21, 0.4)'}`,
+                  border: `1px solid ${location.verificationStatus === 'VERIFIED' ? 'rgba(74, 222, 128, 0.35)' : 'rgba(250, 204, 21, 0.35)'}`,
                   fontWeight: 600,
                 }}
               >
@@ -69,14 +89,16 @@ export default function CandidateMatchCard({
               </span>
             )}
             <span className="candidate-geo">
-              {location.region}, {location.country}
+              {location.region}, <strong style={{ color: '#F2E5D5' }}>{location.country}</strong>
             </span>
           </div>
+
           <h3 className="candidate-name">{location.name}</h3>
+
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginTop: '2px' }}>
             <span className="candidate-coords font-mono">{location.coordinates}</span>
             {location.userSuppliedCoordinates && (
-              <span className="font-mono" style={{ color: 'var(--text-muted, #94a3b8)', fontSize: '10px' }}>
+              <span className="font-mono" style={{ color: 'var(--text-muted, #9E9287)', fontSize: '10px' }}>
                 [Ref: {location.userSuppliedCoordinates.latitude}, {location.userSuppliedCoordinates.longitude}]
               </span>
             )}
@@ -126,7 +148,9 @@ export default function CandidateMatchCard({
         </div>
       </div>
 
-      {/* Environmental Metric Badges with Traceable Confidence */}
+      {/* =========================================================================
+          B. QUANTITATIVE TERRAIN SPECS STRIP
+          ========================================================================= */}
       <div className="candidate-specs-strip">
         <div className="spec-pill">
           <span className="spec-pill-label">Elevation</span>
@@ -158,7 +182,9 @@ export default function CandidateMatchCard({
         </div>
       </div>
 
-      {/* Terrain & Planetary Analogy Description */}
+      {/* =========================================================================
+          C. TERRAIN CLASSIFICATION & GEOLOGICAL CHARACTERISTICS
+          ========================================================================= */}
       <div className="candidate-description-block">
         <div className="desc-row">
           <span className="desc-label">Terrain &amp; Lithology:</span>
@@ -166,11 +192,15 @@ export default function CandidateMatchCard({
         </div>
         <div className="desc-row">
           <span className="desc-label">Target Analogy:</span>
-          <span className="desc-value highlight-cyan">{location.planetaryAnalogy.specificRegion}</span>
+          <span className="desc-value highlight-cyan" style={{ color: 'var(--champagne-gold, #D6A66B)' }}>
+            {location.planetaryAnalogy.specificRegion}
+          </span>
         </div>
       </div>
 
-      {/* Transparent Match / Divergence Summary */}
+      {/* =========================================================================
+          D. PLANETARY RELEVANCE & TRANSPARENT EVIDENCE SUMMARY
+          ========================================================================= */}
       <div className="candidate-evidence-summary">
         {whyItMatches.length > 0 && (
           <div className="evidence-bullet-group match-group">
@@ -226,7 +256,7 @@ export default function CandidateMatchCard({
         {(whyItMatches.length > 2 || whyItDiverges.length > 2 || missingData.length > 1) && (
           <button
             type="button"
-            className="expand-evidence-btn"
+            className="expand-evidence-btn font-mono"
             onClick={() => setIsEvidenceExpanded(!isEvidenceExpanded)}
           >
             {isEvidenceExpanded ? 'Collapse Evidence Details ▲' : 'Show All Match & Divergence Evidence ▼'}
@@ -234,7 +264,9 @@ export default function CandidateMatchCard({
         )}
       </div>
 
-      {/* Footer Actions */}
+      {/* =========================================================================
+          E. CARD ACTIONS: Compare Checkbox, Inspect Profile & Evaluate Site
+          ========================================================================= */}
       <div className="candidate-card-footer">
         <label className="compare-checkbox-label">
           <input
@@ -249,7 +281,7 @@ export default function CandidateMatchCard({
         <div className="card-action-buttons">
           <button
             type="button"
-            className="action-inspect-btn"
+            className="action-inspect-btn font-mono"
             onClick={() => onInspectProfile(location.id)}
           >
             Inspect Profile &rarr;

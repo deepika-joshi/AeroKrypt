@@ -1,6 +1,21 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import MarsSurfaceVisual from './MarsSurfaceVisual.jsx'
+import MoonSurfaceVisual from './MoonSurfaceVisual.jsx'
 
-export default function MarsMoonExploration({ onNavigate }) {
+export default function MarsMoonExploration({
+  selectedPlanet = 'mars',
+  onSelectPlanet,
+  onNavigate,
+}) {
+  const [hoveredPlanet, setHoveredPlanet] = useState(null)
+
+  const handleCardSelect = (planet) => {
+    if (onSelectPlanet) {
+      onSelectPlanet(planet)
+    }
+  }
+
   const handleNavigateTarget = (targetBody) => {
     if (onNavigate) {
       onNavigate('site-evaluation', { targetBody })
@@ -8,7 +23,7 @@ export default function MarsMoonExploration({ onNavigate }) {
   }
 
   return (
-    <section id="mars-moon-exploration" className="mars-moon-section" aria-label="Mars and Moon Exploration">
+    <section id="mars-moon-exploration" className="mars-moon-section reveal-on-scroll" aria-label="Mars and Moon Exploration">
       <div className="mars-moon-container">
         {/* Section Header */}
         <div className="mars-moon-header">
@@ -28,15 +43,32 @@ export default function MarsMoonExploration({ onNavigate }) {
           </div>
         </div>
 
-        {/* Two Large Cinematic Planetary Cards Grid */}
+        {/* Two Large Side-by-Side Cinematic Planetary Cards Grid */}
         <div className="planetary-cards-duo">
-          {/* ================= MARS CARD ================= */}
-          <div className="cinematic-planetary-card card-mars">
+          {/* ================= MARS CARD (LEFT) ================= */}
+          <div
+            className={`cinematic-planetary-card card-mars ${selectedPlanet === 'mars' ? 'is-active-card' : ''} ${hoveredPlanet === 'mars' ? 'is-card-hovered' : ''}`}
+            onMouseEnter={() => setHoveredPlanet('mars')}
+            onMouseLeave={() => setHoveredPlanet(null)}
+            onClick={() => handleCardSelect('mars')}
+            role="button"
+            tabIndex={0}
+            aria-label="Select Mars Environment"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleCardSelect('mars')
+              }
+            }}
+          >
             <div className="card-ambient-aura mars-aura" aria-hidden="true" />
 
-            {/* Visual Header / Terrain Vista */}
+            {/* Visual Viewport with Original Animated Mars Surface */}
             <div className="card-visual-viewport mars-viewport">
-              <div className="card-surface-landscape mars-landscape" />
+              <MarsSurfaceVisual
+                isHovered={hoveredPlanet === 'mars'}
+                isActive={selectedPlanet === 'mars'}
+              />
               <div className="card-telemetry-overlay font-mono">
                 <span className="telemetry-badge-mars">TARGET: MARS // AREOID DATUM</span>
                 <span className="telemetry-coords">18.38°N, 77.58°E</span>
@@ -79,7 +111,10 @@ export default function MarsMoonExploration({ onNavigate }) {
                   to="/assessment"
                   state={{ targetBody: 'Mars' }}
                   className="btn-discover-mars font-mono"
-                  onClick={() => handleNavigateTarget('Mars')}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleNavigateTarget('Mars')
+                  }}
                 >
                   <span>Discover Mars</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -91,7 +126,10 @@ export default function MarsMoonExploration({ onNavigate }) {
                   to="/locations"
                   state={{ targetFilter: 'mars' }}
                   className="btn-secondary-link font-mono"
-                  onClick={() => onNavigate && onNavigate('location-explorer')}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (onNavigate) onNavigate('location-explorer')
+                  }}
                 >
                   View 13 Mars Analogues &rarr;
                 </Link>
@@ -99,13 +137,30 @@ export default function MarsMoonExploration({ onNavigate }) {
             </div>
           </div>
 
-          {/* ================= MOON CARD ================= */}
-          <div className="cinematic-planetary-card card-moon">
+          {/* ================= MOON CARD (RIGHT) ================= */}
+          <div
+            className={`cinematic-planetary-card card-moon ${selectedPlanet === 'moon' ? 'is-active-card' : ''} ${hoveredPlanet === 'moon' ? 'is-card-hovered' : ''}`}
+            onMouseEnter={() => setHoveredPlanet('moon')}
+            onMouseLeave={() => setHoveredPlanet(null)}
+            onClick={() => handleCardSelect('moon')}
+            role="button"
+            tabIndex={0}
+            aria-label="Select Moon Environment"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                handleCardSelect('moon')
+              }
+            }}
+          >
             <div className="card-ambient-aura moon-aura" aria-hidden="true" />
 
-            {/* Visual Header / Terrain Vista */}
+            {/* Visual Viewport with Original Animated Moon Surface */}
             <div className="card-visual-viewport moon-viewport">
-              <div className="card-surface-landscape moon-landscape" />
+              <MoonSurfaceVisual
+                isHovered={hoveredPlanet === 'moon'}
+                isActive={selectedPlanet === 'moon'}
+              />
               <div className="card-telemetry-overlay font-mono">
                 <span className="telemetry-badge-moon">TARGET: MOON // MEAN LUNAR SPHERE</span>
                 <span className="telemetry-coords">89.9°S, 0.0°E</span>
@@ -148,7 +203,10 @@ export default function MarsMoonExploration({ onNavigate }) {
                   to="/assessment"
                   state={{ targetBody: 'Moon' }}
                   className="btn-discover-moon font-mono"
-                  onClick={() => handleNavigateTarget('Moon')}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleNavigateTarget('Moon')
+                  }}
                 >
                   <span>Discover the Moon</span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -160,7 +218,10 @@ export default function MarsMoonExploration({ onNavigate }) {
                   to="/locations"
                   state={{ targetFilter: 'moon' }}
                   className="btn-secondary-link font-mono"
-                  onClick={() => onNavigate && onNavigate('location-explorer')}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (onNavigate) onNavigate('location-explorer')
+                  }}
                 >
                   View 13 Moon Analogues &rarr;
                 </Link>

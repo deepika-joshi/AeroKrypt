@@ -46,7 +46,7 @@ export default function OurTeamSection() {
   ]
 
   return (
-    <section id="our-team" className="our-team-section" aria-label="AeroKrypt Team and Consortium">
+    <section id="our-team" className="our-team-section reveal-on-scroll" aria-label="AeroKrypt Team and Consortium">
       <div className="team-container">
         {/* Section Header */}
         <div className="team-header-block">

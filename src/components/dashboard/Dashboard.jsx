@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import HeroSection from '../home/HeroSection.jsx'
 import AboutAeroKrypt from '../home/AboutAeroKrypt.jsx'
 import ExplorePlatform from '../home/ExplorePlatform.jsx'
@@ -9,6 +10,7 @@ import OurTeamSection from '../home/OurTeamSection.jsx'
 import useScrollReveal from '../../hooks/useScrollReveal.js'
 
 export default function Dashboard({ onNavigate }) {
+  const [selectedPlanet, setSelectedPlanet] = useState('mars')
   const containerRef = useScrollReveal({ threshold: 0.06, rootMargin: '0px 0px -40px 0px' })
 
   const handleExploreScroll = () => {
@@ -21,24 +23,28 @@ export default function Dashboard({ onNavigate }) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const handleMarsFocus = () => {
+  const handleExploreMarsScroll = () => {
+    setSelectedPlanet('mars')
     const el = document.getElementById('mars-moon-exploration')
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const handleMoonFocus = () => {
+  const handleExploreMoonScroll = () => {
+    setSelectedPlanet('moon')
     const el = document.getElementById('mars-moon-exploration')
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
     <div className="aerospace-home-root aerospace-landing-redesign" ref={containerRef}>
-      {/* 1. Cinematic Hero Section with Animated Mars & Moon */}
+      {/* 1. Cinematic Hero Section with Animated Mars & Moon Dual Experience */}
       <HeroSection
+        activePlanet={selectedPlanet}
+        onSelectPlanet={setSelectedPlanet}
         onExploreClick={handleExploreScroll}
         onLearnClick={handleLearnScroll}
-        onMarsClick={handleMarsFocus}
-        onMoonClick={handleMoonFocus}
+        onExploreMarsClick={handleExploreMarsScroll}
+        onExploreMoonClick={handleExploreMoonScroll}
       />
 
       <div className="home-content-stream">
@@ -48,8 +54,12 @@ export default function Dashboard({ onNavigate }) {
         {/* 3. Explore the Platform: 4 Large Feature Cards */}
         <ExplorePlatform onNavigate={onNavigate} />
 
-        {/* 4. Mars and Moon Exploration: Two Worlds. Endless Discoveries. & Our Research Focus */}
-        <MarsMoonExploration onNavigate={onNavigate} />
+        {/* 4. Mars and Moon Exploration: Two Worlds. Endless Discoveries. (Synchronized Planet Focus) */}
+        <MarsMoonExploration
+          selectedPlanet={selectedPlanet}
+          onSelectPlanet={setSelectedPlanet}
+          onNavigate={onNavigate}
+        />
 
         {/* 5. Live Environment Section: Understand Planetary Environments (Temperature, Pressure, Humidity, Oxygen) */}
         <LiveEnvironmentSection />

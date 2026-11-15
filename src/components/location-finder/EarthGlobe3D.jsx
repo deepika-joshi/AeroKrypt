@@ -331,9 +331,9 @@ export default function EarthGlobe3D({
     // 8. Atmospheric Rim Glow Sphere
     const atmosGeo = new THREE.SphereGeometry(earthRadius * 1.018, 48, 48)
     const atmosMat = new THREE.MeshBasicMaterial({
-      color: 0x00d2ff,
+      color: 0x8ba6c1,
       transparent: true,
-      opacity: 0.14,
+      opacity: 0.12,
       blending: THREE.AdditiveBlending,
       side: THREE.BackSide,
     })
@@ -530,7 +530,7 @@ export default function EarthGlobe3D({
         : 0xf97316 // Martian Orange-Red
 
       if (isSelected) {
-        colorHex = 0x00d2ff // Active Bright Cyan Reticle
+        colorHex = 0xd6a66b // Active Champagne Gold Reticle
       }
 
       // Calculate 3D position directly on sphere
@@ -642,30 +642,32 @@ export default function EarthGlobe3D({
         <div
           style={{
             pointerEvents: 'auto',
-            background: 'rgba(5, 6, 8, 0.88)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid var(--border-subtle)',
+            background: 'rgba(16, 12, 11, 0.92)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(214, 166, 107, 0.25)',
             padding: '6px 14px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6)',
           }}
         >
-          <span style={{ color: 'var(--accent-cyan)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em' }}>
+          <span style={{ color: 'var(--champagne-gold, #D6A66B)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em' }}>
             // 3D PLANETARY GEODESY GLOBE
           </span>
-          <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+          <span style={{ fontSize: '11px', color: '#B8ADA3' }}>
             {visibleLocations.length} / {parsedLocations.length} Sites Active
           </span>
           <span
             style={{
               fontSize: '10px',
-              padding: '1px 6px',
+              padding: '1px 7px',
               borderRadius: '2px',
-              backgroundColor: 'rgba(0, 210, 255, 0.15)',
-              color: '#00d2ff',
-              border: '1px solid rgba(0, 210, 255, 0.3)',
+              backgroundColor: 'rgba(214, 166, 107, 0.15)',
+              color: 'var(--champagne-gold, #D6A66B)',
+              border: '1px solid rgba(214, 166, 107, 0.35)',
+              letterSpacing: '0.04em',
             }}
           >
             WGS 84 / WebGL
@@ -683,13 +685,15 @@ export default function EarthGlobe3D({
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: '100%',
-              padding: '6px 12px',
+              padding: '7px 12px',
               fontSize: '11.5px',
-              backgroundColor: 'rgba(5, 6, 8, 0.92)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              color: '#ffffff',
-              borderRadius: '2px',
+              backgroundColor: 'rgba(16, 12, 11, 0.94)',
+              border: '1px solid rgba(214, 166, 107, 0.28)',
+              color: '#F2E5D5',
+              borderRadius: '3px',
               fontFamily: 'monospace',
+              outline: 'none',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6)',
             }}
             aria-label="Search globe locations"
           />
@@ -702,10 +706,10 @@ export default function EarthGlobe3D({
                 left: 0,
                 right: 0,
                 marginTop: '4px',
-                backgroundColor: 'rgba(8, 12, 20, 0.98)',
-                border: '1px solid var(--border-default)',
-                borderRadius: '2px',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.8)',
+                backgroundColor: 'rgba(20, 16, 14, 0.98)',
+                border: '1px solid rgba(214, 166, 107, 0.35)',
+                borderRadius: '3px',
+                boxShadow: '0 12px 32px rgba(0, 0, 0, 0.85)',
                 zIndex: 50,
                 maxHeight: '220px',
                 overflowY: 'auto',
@@ -722,21 +726,21 @@ export default function EarthGlobe3D({
                   }}
                   style={{
                     padding: '8px 12px',
-                    borderBottom: '1px solid var(--border-subtle)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
                     cursor: 'pointer',
                     fontSize: '11px',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    color: '#ffffff',
+                    color: '#F2E5D5',
                   }}
                   className="dropdown-hover-item"
                 >
                   <div>
                     <div style={{ fontWeight: 700 }}>{res.name}</div>
-                    <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{res.country}</div>
+                    <div style={{ color: '#9E9287', fontSize: '10px' }}>{res.country}</div>
                   </div>
-                  <span className="font-mono" style={{ fontSize: '9px', color: 'var(--accent-cyan)' }}>
+                  <span className="font-mono" style={{ fontSize: '9px', color: 'var(--champagne-gold, #D6A66B)' }}>
                     {res.analogueRelevance || res.primaryTarget}
                   </span>
                 </div>
@@ -762,11 +766,11 @@ export default function EarthGlobe3D({
         }}
       >
         {[
-          { id: 'ALL', label: 'All Sites', icon: '🌐' },
-          { id: 'MARS', label: 'Mars Analogues', icon: '🔴' },
-          { id: 'MOON', label: 'Moon Analogues', icon: '⚪' },
-          { id: 'DUAL', label: 'Dual Sites', icon: '⚖️' },
-          { id: 'FACILITY', label: 'Facilities', icon: '⌂' },
+          { id: 'ALL', label: 'All Sites', icon: '🌐', color: '#D6A66B' },
+          { id: 'MARS', label: 'Mars Analogues', icon: '🔴', color: '#A94C34' },
+          { id: 'MOON', label: 'Moon Analogues', icon: '⚪', color: '#AEBAC8' },
+          { id: 'DUAL', label: 'Dual Sites', icon: '⚖️', color: '#D6A66B' },
+          { id: 'FACILITY', label: 'Facilities', icon: '⌂', color: '#C49255' },
         ].map((tab) => {
           const isActive = filterBody === tab.id
           return (
@@ -775,19 +779,20 @@ export default function EarthGlobe3D({
               type="button"
               onClick={() => onFilterChange && onFilterChange(tab.id)}
               style={{
-                background: isActive ? 'rgba(0, 210, 255, 0.25)' : 'rgba(5, 6, 8, 0.85)',
-                color: isActive ? '#00d2ff' : '#cbd5e1',
+                background: isActive ? `${tab.color}25` : 'rgba(16, 12, 11, 0.88)',
+                color: isActive ? '#F2E5D5' : '#B8ADA3',
                 border: '1px solid',
-                borderColor: isActive ? '#00d2ff' : 'rgba(255, 255, 255, 0.15)',
-                padding: '5px 10px',
+                borderColor: isActive ? tab.color : 'rgba(255, 255, 255, 0.12)',
+                padding: '6px 12px',
                 fontSize: '11px',
-                borderRadius: '2px',
+                borderRadius: '3px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
-                backdropFilter: 'blur(6px)',
+                gap: '6px',
+                backdropFilter: 'blur(8px)',
                 textTransform: 'uppercase',
+                transition: 'all 0.18s ease',
               }}
             >
               <span>{tab.icon}</span>
@@ -802,11 +807,13 @@ export default function EarthGlobe3D({
             onClick={onOpenAddModal}
             className="btn-aerospace font-mono"
             style={{
-              padding: '5px 12px',
+              padding: '6px 12px',
               fontSize: '11px',
-              backgroundColor: 'rgba(0, 210, 255, 0.12)',
-              borderColor: 'var(--accent-cyan)',
-              color: '#ffffff',
+              backgroundColor: 'rgba(214, 166, 107, 0.12)',
+              borderColor: 'rgba(214, 166, 107, 0.4)',
+              color: '#F2E5D5',
+              borderRadius: '3px',
+              cursor: 'pointer',
             }}
           >
             + Add Location
@@ -833,14 +840,14 @@ export default function EarthGlobe3D({
           onClick={() => setIsRotating(!isRotating)}
           title={isRotating ? 'Pause auto-rotation' : 'Resume auto-rotation'}
           style={{
-            background: 'rgba(5, 6, 8, 0.88)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: isRotating ? 'var(--accent-cyan)' : 'var(--text-muted)',
-            padding: '6px 10px',
+            background: 'rgba(16, 12, 11, 0.9)',
+            border: '1px solid rgba(214, 166, 107, 0.25)',
+            color: isRotating ? 'var(--champagne-gold, #D6A66B)' : '#9E9287',
+            padding: '6px 12px',
             fontSize: '11px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           {isRotating ? '⏸ Spin' : '▶ Spin'}
@@ -851,14 +858,14 @@ export default function EarthGlobe3D({
           onClick={() => handleZoom(-35)}
           title="Zoom In"
           style={{
-            background: 'rgba(5, 6, 8, 0.88)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: '#ffffff',
+            background: 'rgba(16, 12, 11, 0.9)',
+            border: '1px solid rgba(214, 166, 107, 0.25)',
+            color: '#F2E5D5',
             padding: '6px 12px',
             fontSize: '13px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           +
@@ -869,14 +876,14 @@ export default function EarthGlobe3D({
           onClick={() => handleZoom(35)}
           title="Zoom Out"
           style={{
-            background: 'rgba(5, 6, 8, 0.88)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: '#ffffff',
+            background: 'rgba(16, 12, 11, 0.9)',
+            border: '1px solid rgba(214, 166, 107, 0.25)',
+            color: '#F2E5D5',
             padding: '6px 12px',
             fontSize: '13px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(8px)',
           }}
         >
           &minus;
@@ -887,14 +894,14 @@ export default function EarthGlobe3D({
           onClick={handleResetView}
           title="Reset Globe View"
           style={{
-            background: 'rgba(5, 6, 8, 0.88)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: '#ffffff',
-            padding: '6px 10px',
+            background: 'rgba(16, 12, 11, 0.9)',
+            border: '1px solid rgba(214, 166, 107, 0.25)',
+            color: '#F2E5D5',
+            padding: '6px 12px',
             fontSize: '11px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             cursor: 'pointer',
-            backdropFilter: 'blur(6px)',
+            backdropFilter: 'blur(8px)',
             textTransform: 'uppercase',
           }}
         >
@@ -934,28 +941,30 @@ export default function EarthGlobe3D({
             top: 54,
             left: '50%',
             transform: 'translateX(-50%)',
-            background: 'rgba(8, 12, 20, 0.95)',
-            border: '1px solid var(--accent-cyan)',
+            background: 'rgba(20, 16, 14, 0.96)',
+            border: '1px solid rgba(214, 166, 107, 0.45)',
             padding: '6px 14px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             fontSize: '11px',
-            color: '#ffffff',
+            color: '#F2E5D5',
             pointerEvents: 'none',
             zIndex: 15,
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 210, 255, 0.3)',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.8), 0 0 16px rgba(214, 166, 107, 0.2)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
           }}
         >
-          <span style={{ color: '#00d2ff' }}>⊕</span>
+          <span style={{ color: 'var(--champagne-gold, #D6A66B)' }}>⊕</span>
           <strong>{hoveredLocation.name}</strong>
-          <span style={{ color: 'var(--text-muted)' }}>({hoveredLocation.country})</span>
+          <span style={{ color: '#9E9287' }}>({hoveredLocation.country})</span>
           <span
             style={{
               fontSize: '10px',
               padding: '1px 5px',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(214, 166, 107, 0.15)',
+              color: 'var(--champagne-gold, #D6A66B)',
+              border: '1px solid rgba(214, 166, 107, 0.3)',
               borderRadius: '2px',
             }}
           >
@@ -975,13 +984,13 @@ export default function EarthGlobe3D({
             top: 56,
             right: 16,
             width: '320px',
-            backgroundColor: 'rgba(5, 8, 14, 0.96)',
-            border: '1px solid rgba(0, 210, 255, 0.35)',
-            boxShadow: '0 12px 32px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 210, 255, 0.15)',
+            backgroundColor: 'rgba(20, 16, 14, 0.97)',
+            border: '1px solid rgba(214, 166, 107, 0.35)',
+            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(214, 166, 107, 0.15)',
             padding: '16px',
-            borderRadius: '2px',
+            borderRadius: '4px',
             zIndex: 20,
-            backdropFilter: 'blur(12px)',
+            backdropFilter: 'blur(14px)',
           }}
           aria-label={`Active site profile for ${selectedLocation.name}`}
         >
@@ -991,11 +1000,11 @@ export default function EarthGlobe3D({
               <span
                 style={{
                   fontSize: '9px',
-                  padding: '1px 5px',
+                  padding: '2px 6px',
                   borderRadius: '2px',
-                  backgroundColor: 'rgba(0, 210, 255, 0.15)',
-                  color: '#00d2ff',
-                  border: '1px solid rgba(0, 210, 255, 0.3)',
+                  backgroundColor: 'rgba(214, 166, 107, 0.16)',
+                  color: 'var(--champagne-gold, #D6A66B)',
+                  border: '1px solid rgba(214, 166, 107, 0.35)',
                   fontWeight: 700,
                 }}
               >
@@ -1004,7 +1013,7 @@ export default function EarthGlobe3D({
               <span
                 style={{
                   fontSize: '9px',
-                  padding: '1px 5px',
+                  padding: '2px 6px',
                   borderRadius: '2px',
                   backgroundColor: selectedLocation.verificationStatus === 'VERIFIED' ? 'rgba(74, 222, 128, 0.15)' : 'rgba(250, 204, 21, 0.15)',
                   color: selectedLocation.verificationStatus === 'VERIFIED' ? '#4ade80' : '#facc15',
@@ -1022,7 +1031,7 @@ export default function EarthGlobe3D({
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--text-muted)',
+                color: 'var(--text-muted, #9E9287)',
                 fontSize: '18px',
                 cursor: 'pointer',
                 lineHeight: 1,
@@ -1036,27 +1045,27 @@ export default function EarthGlobe3D({
 
           <h3
             style={{
-              fontSize: '14px',
+              fontSize: '14.5px',
               fontWeight: 800,
-              color: '#ffffff',
-              margin: '2px 0',
+              color: 'var(--warm-ivory, #F2E5D5)',
+              margin: '3px 0',
               textTransform: 'uppercase',
               lineHeight: 1.25,
             }}
           >
             {selectedLocation.name}
           </h3>
-          <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '10px' }}>
-            {selectedLocation.region}, <strong>{selectedLocation.country}</strong>
+          <div style={{ fontSize: '11px', color: '#B8ADA3', marginBottom: '10px' }}>
+            {selectedLocation.region}, <strong style={{ color: '#F2E5D5' }}>{selectedLocation.country}</strong>
           </div>
 
           {/* Quick Telemetry Specs */}
           <div
             style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              padding: '8px 10px',
-              borderRadius: '2px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(12, 9, 8, 0.65)',
+              padding: '9px 11px',
+              borderRadius: '3px',
+              border: '1px solid rgba(214, 166, 107, 0.12)',
               fontSize: '11px',
               display: 'flex',
               flexDirection: 'column',
@@ -1065,25 +1074,25 @@ export default function EarthGlobe3D({
             }}
           >
             <div>
-              <span style={{ color: 'var(--text-muted)' }}>Coordinates: </span>
-              <span style={{ color: 'var(--accent-cyan)' }}>
+              <span style={{ color: '#9E9287' }}>Coordinates: </span>
+              <span style={{ color: 'var(--champagne-gold, #D6A66B)' }}>
                 {selectedLocation.coordinates || `${selectedLocation.lat.toFixed(4)}°, ${selectedLocation.lng.toFixed(4)}°`}
               </span>
             </div>
             <div>
-              <span style={{ color: 'var(--text-muted)' }}>Terrain: </span>
-              <span style={{ color: '#ffffff' }}>{selectedLocation.terrainType}</span>
+              <span style={{ color: '#9E9287' }}>Terrain: </span>
+              <span style={{ color: '#F2E5D5' }}>{selectedLocation.terrainType}</span>
             </div>
             <div>
-              <span style={{ color: 'var(--text-muted)' }}>Lithology: </span>
-              <span style={{ color: '#cbd5e1' }}>
+              <span style={{ color: '#9E9287' }}>Lithology: </span>
+              <span style={{ color: '#AEBAC8' }}>
                 {selectedLocation.lithology ? selectedLocation.lithology.slice(0, 3).join(', ') : 'Cataloged'}
               </span>
             </div>
             {selectedLocation.elevation && (
               <div>
-                <span style={{ color: 'var(--text-muted)' }}>Elevation: </span>
-                <span style={{ color: '#ffffff' }}>{selectedLocation.elevation.label}</span>
+                <span style={{ color: '#9E9287' }}>Elevation: </span>
+                <span style={{ color: '#F2E5D5' }}>{selectedLocation.elevation.label}</span>
               </div>
             )}
           </div>
@@ -1093,25 +1102,44 @@ export default function EarthGlobe3D({
             {onEvaluateSite && (
               <button
                 type="button"
-                className="btn-aerospace btn-aerospace-cyan"
+                className="btn-aerospace font-mono"
                 onClick={() => onEvaluateSite(selectedLocation.id)}
-                style={{ padding: '7px 12px', fontSize: '11px', textAlign: 'center' }}
+                style={{
+                  padding: '7px 12px',
+                  fontSize: '11px',
+                  textAlign: 'center',
+                  background: 'linear-gradient(135deg, #D6A66B 0%, #A94C34 100%)',
+                  color: '#100C0B',
+                  fontWeight: 700,
+                  border: 'none',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                }}
               >
                 <span>OPEN COMPLETE SITE EVALUATION</span>
-                <span>&rarr;</span>
+                <span> &rarr;</span>
               </button>
             )}
 
             <button
               type="button"
-              className="btn-aerospace"
+              className="btn-aerospace font-mono"
               onClick={() => {
                 if (onSelectLocation) onSelectLocation(selectedLocation.id)
               }}
-              style={{ padding: '6px 12px', fontSize: '11px', textAlign: 'center' }}
+              style={{
+                padding: '6px 12px',
+                fontSize: '11px',
+                textAlign: 'center',
+                background: 'rgba(214, 166, 107, 0.1)',
+                border: '1px solid rgba(214, 166, 107, 0.3)',
+                color: '#F2E5D5',
+                borderRadius: '3px',
+                cursor: 'pointer',
+              }}
             >
               <span>INSPECT FULL PROFILE DOSSIER</span>
-              <span>❯</span>
+              <span> ❯</span>
             </button>
           </div>
         </aside>

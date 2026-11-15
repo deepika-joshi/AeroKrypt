@@ -88,7 +88,7 @@ export default function ExplorePlatform({ onNavigate }) {
   }
 
   return (
-    <section id="explore-platform" className="explore-platform-section" aria-label="Explore the Platform">
+    <section id="explore-platform" className="explore-platform-section reveal-on-scroll" aria-label="Explore the Platform">
       <div className="features-container">
         {/* Section Header */}
         <div className="features-header-block">
@@ -105,10 +105,10 @@ export default function ExplorePlatform({ onNavigate }) {
 
         {/* 4 Large Feature Cards Grid */}
         <div className="features-cards-grid">
-          {platformFeatures.map((feat) => (
+          {platformFeatures.map((feat, idx) => (
             <div
               key={feat.id}
-              className="premium-feature-card"
+              className={`premium-feature-card reveal-on-scroll stagger-${idx + 1}`}
               onClick={() => handleCardClick(feat.id)}
               role="group"
               tabIndex={0}

@@ -2,15 +2,16 @@
  * AnimatedPlanetaryHero Component
  * 
  * Replaces static images with authentic, multi-layered animated Mars and Moon planets
- * using layered CSS gradients, procedural SVG terrain textures, 3D spherical shading,
- * realistic terminator shadows, and interactive planet switching.
+ * occupying different depths in an interactive planetary orbital system.
+ * 
+ * Initial state: Mars large in foreground, Moon smaller, clearly visible to the side.
+ * When switching: smooth depth transitions with scaling, translation, and z-index changes.
  */
 
 export default function AnimatedPlanetaryHero({
   activePlanet = 'mars',
   onSelectPlanet,
 }) {
-
   // Planetary physical telemetry constants (authentic planetary geodesy)
   const planetData = {
     mars: {
@@ -53,24 +54,32 @@ export default function AnimatedPlanetaryHero({
 
       {/* 2. Geodetic Coordinate Rings & Orbital Trajectory Arc */}
       <div className="planetary-orbit-reticle" aria-hidden="true">
-        <svg viewBox="0 0 600 600" className="reticle-svg">
-          <circle cx="300" cy="300" r="270" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" opacity="0.22" />
-          <circle cx="300" cy="300" r="230" stroke="currentColor" strokeWidth="1" opacity="0.12" />
-          <path d="M 50 300 A 250 140 0 0 1 550 300" stroke="currentColor" strokeWidth="1.2" strokeDasharray="3 6" opacity="0.28" fill="none" />
-          <line x1="285" y1="300" x2="315" y2="300" stroke="currentColor" strokeWidth="1" opacity="0.4" />
-          <line x1="300" y1="285" x2="300" y2="315" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <svg viewBox="0 0 640 480" className="reticle-svg">
+          <ellipse cx="320" cy="240" rx="280" ry="170" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" opacity="0.25" fill="none" />
+          <ellipse cx="320" cy="240" rx="220" ry="130" stroke="currentColor" strokeWidth="1" strokeDasharray="2 6" opacity="0.15" fill="none" />
+          {/* Orbital connecting arc between the two planet positions */}
+          <path
+            d="M 120 200 C 200 120 440 120 520 200 C 460 320 180 320 120 200"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeDasharray="5 5"
+            opacity="0.32"
+            fill="none"
+          />
+          <line x1="310" y1="240" x2="330" y2="240" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+          <line x1="320" y1="230" x2="320" y2="250" stroke="currentColor" strokeWidth="1" opacity="0.4" />
         </svg>
       </div>
 
-      {/* 3. Central Dual Planetary Stage */}
+      {/* 3. Central Dual Planetary Depth Viewport */}
       <div className="planetary-viewport-wrapper">
         {/* ================= MARS GLOBE ================= */}
         <div
-          className={`planetary-body-container mars-body-container ${activePlanet === 'mars' ? 'is-active' : 'is-standby'}`}
+          className={`planetary-body-container mars-body-container ${activePlanet === 'mars' ? 'is-active is-foreground' : 'is-standby is-background'}`}
           onClick={() => { if (onSelectPlanet) onSelectPlanet('mars') }}
           role="button"
           tabIndex={0}
-          aria-label="Select Mars Exploration View"
+          aria-label={activePlanet === 'mars' ? 'Mars (Selected Planet)' : 'Switch to Mars (Click to select)'}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
@@ -211,19 +220,19 @@ export default function AnimatedPlanetaryHero({
             <div className="limb-specular-ring mars-limb" aria-hidden="true" />
           </div>
 
-          {/* Standby Label Pill */}
+          {/* Standby Planet Tooltip Pill (Prompts to click) */}
           <div className="standby-planet-tag font-mono">
-            <span>MARS // TARGET 01</span>
+            <span>{activePlanet === 'mars' ? 'MARS // 0.380G (ACTIVE)' : 'CLICK TO SELECT MARS // 0.380G'}</span>
           </div>
         </div>
 
         {/* ================= MOON GLOBE ================= */}
         <div
-          className={`planetary-body-container moon-body-container ${activePlanet === 'moon' ? 'is-active' : 'is-standby'}`}
+          className={`planetary-body-container moon-body-container ${activePlanet === 'moon' ? 'is-active is-foreground' : 'is-standby is-background'}`}
           onClick={() => { if (onSelectPlanet) onSelectPlanet('moon') }}
           role="button"
           tabIndex={0}
-          aria-label="Select Moon Exploration View"
+          aria-label={activePlanet === 'moon' ? 'Moon (Selected Planet)' : 'Switch to Moon (Click to select)'}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
@@ -365,9 +374,9 @@ export default function AnimatedPlanetaryHero({
             <div className="limb-specular-ring moon-limb" aria-hidden="true" />
           </div>
 
-          {/* Standby Label Pill */}
+          {/* Standby Planet Tooltip Pill (Prompts to click) */}
           <div className="standby-planet-tag font-mono">
-            <span>MOON // TARGET 02</span>
+            <span>{activePlanet === 'moon' ? 'MOON // 0.166G (ACTIVE)' : 'CLICK TO SELECT MOON // 0.166G'}</span>
           </div>
         </div>
       </div>
@@ -379,7 +388,7 @@ export default function AnimatedPlanetaryHero({
           role="tab"
           aria-selected={activePlanet === 'mars'}
           className={`switcher-pill mars-pill ${activePlanet === 'mars' ? 'active' : ''}`}
-          onClick={() => onSelectPlanet && onSelectPlanet('mars')}
+          onClick={() => { if (onSelectPlanet) onSelectPlanet('mars') }}
         >
           <span className="pill-dot mars-dot" aria-hidden="true" />
           <span className="pill-label">MARS</span>
@@ -391,7 +400,7 @@ export default function AnimatedPlanetaryHero({
           role="tab"
           aria-selected={activePlanet === 'moon'}
           className={`switcher-pill moon-pill ${activePlanet === 'moon' ? 'active' : ''}`}
-          onClick={() => onSelectPlanet && onSelectPlanet('moon')}
+          onClick={() => { if (onSelectPlanet) onSelectPlanet('moon') }}
         >
           <span className="pill-dot moon-dot" aria-hidden="true" />
           <span className="pill-label">MOON</span>

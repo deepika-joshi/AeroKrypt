@@ -51,6 +51,28 @@
 }
 
 /* --------------------------------------------------------------------------
+   0B. PROGRESSIVE SCROLL REVEAL ANIMATIONS
+   -------------------------------------------------------------------------- */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered card reveals */
+.stagger-1 { transition-delay: 0.08s; }
+.stagger-2 { transition-delay: 0.16s; }
+.stagger-3 { transition-delay: 0.24s; }
+.stagger-4 { transition-delay: 0.32s; }
+
+/* --------------------------------------------------------------------------
    1. HERO SECTION - CINEMATIC PLANETARY INTRODUCTION
    -------------------------------------------------------------------------- */
 .aerospace-hero-section {
@@ -433,82 +455,130 @@
 
 .planetary-viewport-wrapper {
   position: relative;
-  width: 440px;
-  height: 440px;
+  width: 560px;
+  max-width: 100%;
+  height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Dual Planetary Body Containers */
+/* Dual Planetary Body Depth System */
 .planetary-body-container {
   position: absolute;
   cursor: pointer;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   outline: none;
+  transition: 
+    left 0.85s cubic-bezier(0.2, 0.9, 0.3, 1),
+    top 0.85s cubic-bezier(0.2, 0.9, 0.3, 1),
+    transform 0.85s cubic-bezier(0.2, 0.9, 0.3, 1),
+    opacity 0.65s ease,
+    filter 0.65s ease;
+  will-change: left, top, transform, opacity;
 }
 
-/* Active State: Centered, Full Scale */
-.planetary-body-container.is-active {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  z-index: 5;
+/* --- STATE A: MARS IS ACTIVE / FOREGROUND --- */
+.planet-mode-mars .mars-body-container {
+  left: 44%;
+  top: 52%;
+  transform: translate(-50%, -50%) scale(1.0);
+  z-index: 10;
   opacity: 1;
   pointer-events: auto;
-  animation: planetGentleFloat 7s ease-in-out infinite alternate;
+  animation: marsGentleFloat 7s ease-in-out infinite alternate;
 }
 
-/* Standby State: Smaller, Upper-Right Offset */
-.planetary-body-container.is-standby {
-  top: 15%;
-  right: -5%;
-  left: auto;
-  transform: scale(0.42);
-  z-index: 3;
-  opacity: 0.65;
-  filter: brightness(0.85);
-  animation: planetMiniFloat 6s ease-in-out infinite alternate;
+.planet-mode-mars .moon-body-container {
+  left: 82%;
+  top: 32%;
+  transform: translate(-50%, -50%) scale(0.56);
+  z-index: 4;
+  opacity: 0.92;
+  filter: brightness(0.9);
+  animation: moonMiniFloat 6s ease-in-out infinite alternate;
 }
 
-.planetary-body-container.is-standby:hover {
-  opacity: 0.95;
-  filter: brightness(1.1);
-  transform: scale(0.46);
+.planet-mode-mars .moon-body-container:hover {
+  transform: translate(-50%, -50%) scale(0.61);
+  filter: brightness(1.15);
+  opacity: 1;
 }
 
+/* --- STATE B: MOON IS ACTIVE / FOREGROUND --- */
+.planet-mode-moon .moon-body-container {
+  left: 56%;
+  top: 52%;
+  transform: translate(-50%, -50%) scale(1.0);
+  z-index: 10;
+  opacity: 1;
+  pointer-events: auto;
+  animation: moonGentleFloat 7s ease-in-out infinite alternate;
+}
+
+.planet-mode-moon .mars-body-container {
+  left: 20%;
+  top: 32%;
+  transform: translate(-50%, -50%) scale(0.56);
+  z-index: 4;
+  opacity: 0.92;
+  filter: brightness(0.9);
+  animation: marsMiniFloat 6s ease-in-out infinite alternate;
+}
+
+.planet-mode-moon .mars-body-container:hover {
+  transform: translate(-50%, -50%) scale(0.61);
+  filter: brightness(1.15);
+  opacity: 1;
+}
+
+/* Standby Tooltip Prompt */
 .standby-planet-tag {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
   position: absolute;
-  bottom: -32px;
+  bottom: -34px;
   left: 50%;
-  transform: translateX(-50%);
-  background: rgba(16, 12, 11, 0.88);
-  border: 1px solid rgba(242, 229, 213, 0.2);
-  padding: 4px 10px;
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(16, 12, 11, 0.92);
+  border: 1px solid rgba(214, 166, 107, 0.35);
+  padding: 5px 12px;
   border-radius: 2px;
   font-size: 10px;
   letter-spacing: 0.16em;
   color: var(--champagne-gold, #D6A66B);
   white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 20;
 }
 
-.planetary-body-container.is-standby:hover .standby-planet-tag {
-  display: block;
+.planetary-body-container:hover .standby-planet-tag {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-@keyframes planetGentleFloat {
+@keyframes marsGentleFloat {
   0% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
   50% { transform: translate(-50%, -50%) translateY(-10px) rotate(0.4deg); }
   100% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
 }
 
-@keyframes planetMiniFloat {
-  0% { transform: scale(0.42) translateY(0px); }
-  50% { transform: scale(0.42) translateY(-6px); }
-  100% { transform: scale(0.42) translateY(0px); }
+@keyframes moonGentleFloat {
+  0% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
+  50% { transform: translate(-50%, -50%) translateY(-10px) rotate(-0.4deg); }
+  100% { transform: translate(-50%, -50%) translateY(0px) rotate(0deg); }
+}
+
+@keyframes marsMiniFloat {
+  0% { transform: translate(-50%, -50%) scale(0.56) translateY(0px); }
+  50% { transform: translate(-50%, -50%) scale(0.56) translateY(-6px); }
+  100% { transform: translate(-50%, -50%) scale(0.56) translateY(0px); }
+}
+
+@keyframes moonMiniFloat {
+  0% { transform: translate(-50%, -50%) scale(0.56) translateY(0px); }
+  50% { transform: translate(-50%, -50%) scale(0.56) translateY(-6px); }
+  100% { transform: translate(-50%, -50%) scale(0.56) translateY(0px); }
 }
 
 /* Spherical Globe Shell */
@@ -1324,55 +1394,318 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cinematic-planetary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.85);
+}
+
+/* Active Highlighted Card State */
+.cinematic-planetary-card.is-active-card.card-mars {
+  border-color: var(--terracotta, #A94C34);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 28px rgba(169, 76, 52, 0.35);
   transform: translateY(-4px);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8);
+}
+
+.cinematic-planetary-card.is-active-card.card-moon {
+  border-color: var(--lunar-silver, #AEBAC8);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 28px rgba(174, 186, 200, 0.3);
+  transform: translateY(-4px);
 }
 
 .card-mars:hover {
-  border-color: rgba(169, 76, 52, 0.5);
+  border-color: rgba(169, 76, 52, 0.6);
 }
 
 .card-moon:hover {
-  border-color: rgba(174, 186, 200, 0.5);
+  border-color: rgba(174, 186, 200, 0.6);
 }
 
 /* Card Visual Header */
 .card-visual-viewport {
   position: relative;
-  height: 240px;
+  height: 270px;
   width: 100%;
   overflow: hidden;
-  background-color: #100C0B;
+  background-color: #0A0706;
 }
 
-.card-surface-landscape {
+/* --------------------------------------------------------------------------
+   ORIGINAL MARS SURFACE ANIMATION COMPONENT
+   -------------------------------------------------------------------------- */
+.mars-surface-visual-root {
+  position: relative;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
-.cinematic-planetary-card:hover .card-surface-landscape {
+.mars-landscape-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinematic-planetary-card:hover .mars-landscape-svg,
+.mars-surface-visual-root.is-hovered .mars-landscape-svg {
   transform: scale(1.04);
 }
 
-/* Authentic Martian Landscape Gradient Composition */
-.mars-landscape {
-  background: 
-    linear-gradient(to top, rgba(16, 12, 11, 0.95) 0%, rgba(97, 37, 30, 0.4) 40%, rgba(169, 76, 52, 0.6) 80%, #61251E 100%),
-    radial-gradient(circle at 60% 30%, #C45E3D 0%, #873420 50%, #3D1712 100%);
+.mars-sky-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  pointer-events: none;
+  z-index: 1;
 }
 
-/* Authentic Lunar Landscape Gradient Composition */
-.moon-landscape {
-  background: 
-    linear-gradient(to top, rgba(16, 12, 11, 0.95) 0%, rgba(37, 42, 51, 0.4) 40%, rgba(174, 186, 200, 0.5) 80%, #3D444E 100%),
-    radial-gradient(circle at 60% 30%, #AEBAC8 0%, #6B7888 50%, #1A1D24 100%);
+/* Phobos Miniature Moon in Martian Sky */
+.mars-phobos-moon {
+  position: absolute;
+  top: 24px;
+  right: 120px;
+  width: 8px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D6A66B;
+  box-shadow: 0 0 8px rgba(214, 166, 107, 0.6);
+  opacity: 0.85;
+  animation: phobosDrift 40s linear infinite;
+}
+
+@keyframes phobosDrift {
+  0% { transform: translateX(0px) translateY(0px); opacity: 0.8; }
+  50% { transform: translateX(-15px) translateY(4px); opacity: 0.95; }
+  100% { transform: translateX(0px) translateY(0px); opacity: 0.8; }
+}
+
+.mars-dust-haze {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 60% 70%, rgba(169, 76, 52, 0.25) 0%, transparent 65%);
+  pointer-events: none;
+  animation: marsHazeBreathe 8s ease-in-out infinite alternate;
+}
+
+@keyframes marsHazeBreathe {
+  0% { opacity: 0.5; }
+  100% { opacity: 0.85; }
+}
+
+/* Mars Floating Dust Particles */
+.dust-particle {
+  animation: floatMarsDust 6s ease-in-out infinite alternate;
+}
+
+.dp-1 { animation-delay: 0s; }
+.dp-2 { animation-delay: 1.2s; }
+.dp-3 { animation-delay: 2.4s; }
+.dp-4 { animation-delay: 0.8s; }
+.dp-5 { animation-delay: 3s; }
+.dp-6 { animation-delay: 1.8s; }
+.dp-7 { animation-delay: 2.1s; }
+
+@keyframes floatMarsDust {
+  0% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(14px, -8px); opacity: 0.9; }
+  100% { transform: translate(25px, -3px); opacity: 0.6; }
+}
+
+/* Mars Sunlight Sweep */
+.mars-sunlight-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, rgba(214, 166, 107, 0.12) 0%, transparent 40%, rgba(97, 37, 30, 0.2) 100%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  animation: marsSunSweep 12s ease-in-out infinite alternate;
+}
+
+@keyframes marsSunSweep {
+  0% { opacity: 0.4; transform: translateX(-10%); }
+  100% { opacity: 0.8; transform: translateX(10%); }
+}
+
+.mars-atmosphere-glow {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 40px rgba(97, 37, 30, 0.5);
+  pointer-events: none;
+  transition: box-shadow 0.4s ease;
+}
+
+.cinematic-planetary-card:hover .mars-atmosphere-glow {
+  box-shadow: inset 0 0 55px rgba(169, 76, 52, 0.65);
+}
+
+.mars-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 65%, rgba(16, 12, 11, 0.88) 100%);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   ORIGINAL MOON SURFACE ANIMATION COMPONENT
+   -------------------------------------------------------------------------- */
+.moon-surface-visual-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.moon-landscape-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinematic-planetary-card:hover .moon-landscape-svg,
+.moon-surface-visual-root.is-hovered .moon-landscape-svg {
+  transform: scale(1.04);
+}
+
+.moon-sky-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Crescent Earthrise over Lunar Horizon */
+.lunar-earthrise-orb {
+  position: absolute;
+  top: 22px;
+  right: 140px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #0284c7;
+  overflow: hidden;
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.55), 0 0 30px rgba(0, 210, 255, 0.2);
+  animation: earthriseFloat 8s ease-in-out infinite alternate;
+}
+
+.earth-crescent-body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 75% 30%, #ffffff 0%, #10b981 30%, #0284c7 65%, #050608 100%);
+}
+
+.earth-blue-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes earthriseFloat {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-4px); }
+}
+
+/* Levitating Electrostatic Lunar Dust Grains */
+.lunar-grain {
+  animation: floatLunarDust 5s ease-in-out infinite alternate;
+}
+
+.lg-1 { animation-delay: 0s; }
+.lg-2 { animation-delay: 1s; }
+.lg-3 { animation-delay: 2.2s; }
+.lg-4 { animation-delay: 0.6s; }
+.lg-5 { animation-delay: 2.8s; }
+.lg-6 { animation-delay: 1.6s; }
+.lg-7 { animation-delay: 3.2s; }
+
+@keyframes floatLunarDust {
+  0% { transform: translate(0, 0); opacity: 0.6; }
+  50% { transform: translate(-8px, -12px); opacity: 1; }
+  100% { transform: translate(-14px, -6px); opacity: 0.7; }
+}
+
+/* Lunar Metallic Specular Sweep */
+.moon-specular-sweep {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.12) 0%, transparent 40%, rgba(174, 186, 200, 0.15) 100%);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  animation: lunarSpecularShift 14s ease-in-out infinite alternate;
+}
+
+@keyframes lunarSpecularShift {
+  0% { opacity: 0.4; transform: translateX(-8%); }
+  100% { opacity: 0.85; transform: translateX(8%); }
+}
+
+.moon-terminator-shadow {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 35px rgba(10, 12, 16, 0.65);
+  pointer-events: none;
+  transition: box-shadow 0.4s ease;
+}
+
+.cinematic-planetary-card:hover .moon-terminator-shadow {
+  box-shadow: inset 0 0 50px rgba(174, 186, 200, 0.35);
+}
+
+.moon-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 65%, rgba(16, 12, 11, 0.88) 100%);
+  pointer-events: none;
+}
+
+/* Surface HUD Indicator */
+.surface-hud-indicator {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  color: var(--warm-ivory, #F2E5D5);
+  background: rgba(16, 12, 11, 0.82);
+  border: 1px solid rgba(242, 229, 213, 0.16);
+  padding: 3px 8px;
+  border-radius: 2px;
+  z-index: 5;
+}
+
+.hud-ping-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.hud-ping-dot.mars-dot {
+  background-color: var(--terracotta, #A94C34);
+  box-shadow: 0 0 6px var(--terracotta, #A94C34);
+}
+
+.hud-ping-dot.moon-dot {
+  background-color: var(--lunar-silver, #AEBAC8);
+  box-shadow: 0 0 6px var(--lunar-silver, #AEBAC8);
 }
 
 .card-telemetry-overlay {

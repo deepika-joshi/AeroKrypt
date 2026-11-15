@@ -84,7 +84,7 @@ export default function LiveEnvironmentSection() {
   ]
 
   return (
-    <section id="planetary-environments" className="planetary-environments-section" aria-label="Planetary Environments Monitoring">
+    <section id="planetary-environments" className="planetary-environments-section reveal-on-scroll" aria-label="Planetary Environments Monitoring">
       <div className="environments-container">
         {/* Section Header */}
         <div className="environments-header-block">
