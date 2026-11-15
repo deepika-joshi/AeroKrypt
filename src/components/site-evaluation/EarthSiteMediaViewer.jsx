@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { getSiteMedia } from '../../data/siteMediaManifest.js'
+import { getSiteMedia, getAssetUrl } from '../../data/siteMediaManifest.js'
 import InteractiveMap from '../common/InteractiveMap.jsx'
 
 const CATEGORY_LABELS = {
@@ -322,7 +322,7 @@ function EarthSiteMediaGallery({ locationId, location, height = '240px' }) {
         {activeImage && !hasError ? (
           <img
             key={activeImage.id}
-            src={activeImage.localPath}
+            src={getAssetUrl(activeImage.localPath)}
             alt={activeImage.title || activeImage.caption}
             loading="lazy"
             onError={() => setHasError(true)}
@@ -604,7 +604,7 @@ function EarthSiteMediaGallery({ locationId, location, height = '240px' }) {
                 title={item.title}
               >
                 <img
-                  src={item.localPath}
+                  src={getAssetUrl(item.localPath)}
                   alt={item.title}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

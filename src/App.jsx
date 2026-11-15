@@ -147,8 +147,11 @@ function AppRouterWrapper({ children }) {
     window.history &&
     typeof window.history.pushState === 'function'
 
-  const RouterComponent = hasHistory ? BrowserRouter : MemoryRouter
-  return <RouterComponent>{children}</RouterComponent>
+  if (hasHistory) {
+    return <BrowserRouter basename={import.meta.env?.BASE_URL || '/'}>{children}</BrowserRouter>
+  }
+
+  return <MemoryRouter>{children}</MemoryRouter>
 }
 
 export default function App() {

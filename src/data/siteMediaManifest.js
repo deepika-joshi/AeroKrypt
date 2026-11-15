@@ -547,3 +547,21 @@ export function getSiteMediaCategories(siteId) {
   return Array.from(cats)
 }
 
+/**
+ * Resolves an asset path with the active Vite base URL.
+ * Handles root ('/'), subpaths (e.g. '/AeroKrypt/'), and external URLs.
+ * @param {string} path - The relative or root-relative path to the asset.
+ * @returns {string} The fully resolved path including base URL.
+ */
+export function getAssetUrl(path) {
+  if (!path) return ''
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+    return path
+  }
+  const base = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/'
+  const cleanBase = base.endsWith('/') ? base : `${base}/`
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path
+  return `${cleanBase}${cleanPath}`
+}
+
+
