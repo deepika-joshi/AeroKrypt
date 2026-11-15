@@ -11,6 +11,7 @@ import {
 } from '../../data/learningCenterData.js'
 import { researchApi } from '../../services/apiClient.js'
 import { getPublicPublishedContributions } from '../../services/researchRecordService.js'
+import PageIntroHeader from '../common/PageIntroHeader.jsx'
 
 export default function PublicDiscovery({ onNavigate = null }) {
   const [activeSection, setActiveSection] = useState('instruments') // 'instruments' | 'learning' | 'case-studies' | 'published-archive'
@@ -142,6 +143,8 @@ export default function PublicDiscovery({ onNavigate = null }) {
 
   return (
     <div className="public-discovery-container" style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+      <PageIntroHeader pageKey="public-discovery" />
+
       {/* 1. Sub-Navigation Tabs */}
       <div
         className="hub-tabs-bar"

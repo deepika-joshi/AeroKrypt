@@ -12,6 +12,7 @@ import LocationSidePanel from './LocationSidePanel.jsx'
 import InteractiveMap from '../common/InteractiveMap.jsx'
 import EarthGlobe3D from './EarthGlobe3D.jsx'
 import AddLocationModal from './AddLocationModal.jsx'
+import PageIntroHeader from '../common/PageIntroHeader.jsx'
 
 const DEFAULT_CRITERIA = {
   targetBody: 'ALL',
@@ -237,6 +238,8 @@ export default function LocationFinder({ prefocusedLocationId = null, _onClearPr
 
   return (
     <div className="location-finder-container" ref={mapSectionRef}>
+      <PageIntroHeader pageKey="location-explorer" />
+
       {/* =========================================================================
           1. DARK, SPACE-INSPIRED LEAFLET WORLD MAP (AT THE TOP OF THE PAGE)
           ========================================================================= */}

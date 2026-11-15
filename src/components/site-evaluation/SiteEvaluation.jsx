@@ -12,6 +12,7 @@ import EvidenceRegistryPanel from './EvidenceRegistryPanel.jsx'
 import AssessmentSummaryCard from './AssessmentSummaryCard.jsx'
 import SiteReportModal from './SiteReportModal.jsx'
 import PlanetaryTerrainComparison from './PlanetaryTerrainComparison.jsx'
+import PageIntroHeader from '../common/PageIntroHeader.jsx'
 import '../../styles/site-evaluation.css'
 
 export default function SiteEvaluation({
@@ -96,22 +97,7 @@ export default function SiteEvaluation({
 
   return (
     <div className="site-evaluation-container" id="site-evaluation-module">
-      {/* 1. Module Main Heading & Telemetry Bar */}
-      <div className="section-header-row" style={{ marginBottom: '16px' }}>
-        <div>
-          <div className="aerospace-label">
-            <span className="aerospace-label-accent">//</span> SCIENTIFIC GEODESY &amp; ANALOGUE FIDELITY
-          </div>
-          <h2 className="section-heading">Analogue Site Assessment</h2>
-          <p className="section-subheading">
-            Dual-vector evaluation of terrestrial analogue fidelity and operational mission suitability against Mars and Lunar orbital baselines.
-          </p>
-        </div>
-        <div className="dataset-notice-chip font-mono">
-          <span className="notice-dot" />
-          <span>DUAL-VECTOR GEOLOGICAL &amp; OPERATIONAL ASSESSMENT</span>
-        </div>
-      </div>
+      <PageIntroHeader pageKey="site-evaluation" />
 
       {/* Top Scientific Control Panel */}
       <section className="evaluation-controls-bar">

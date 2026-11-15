@@ -18,6 +18,7 @@ import {
 } from '../../services/researchRecordService.js'
 import { authApi, researchApi, evaluationsApi } from '../../services/apiClient.js'
 import ResearcherAuthModal from './ResearcherAuthModal.jsx'
+import PageIntroHeader from '../common/PageIntroHeader.jsx'
 import { ANALOGUE_LOCATIONS } from '../../data/locationsData.js'
 import { PLANETARY_TERRAIN_DATASETS } from '../../data/planetaryTerrainData.js'
 import { PEER_REVIEWED_RESEARCH_LIBRARY, RESEARCH_CATEGORIES } from '../../data/researchLibraryData.js'
@@ -831,6 +832,8 @@ export default function ResearchHub({ initialSubview = 'experiments', onNavigate
 
   return (
     <div className="research-hub-container" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <PageIntroHeader pageKey="research-hub" />
+
       {/* AEROKRYPT Authenticated Researcher Session Banner */}
       <div
         className="font-mono"
