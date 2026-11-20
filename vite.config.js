@@ -21,8 +21,7 @@ function githubPagesSpaFallbackPlugin() {
 
 export default defineConfig({
   plugins: [react(), githubPagesSpaFallbackPlugin()],
-  base: '/',
-  server: {
+  base: process.env.GITHUB_PAGES === 'true' ? '/AeroKrypt/' : '/', server: {
     port: 5173,
     proxy: {
       '/api': {
